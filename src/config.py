@@ -1,1 +1,1 @@
-PACKAGE_NAME = 'example_nlp'  # TODO: update this to your package name
+PACKAGE_NAME = 'fe5_konsepy'  # TODO: update this to your package name

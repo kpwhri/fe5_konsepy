@@ -8,7 +8,7 @@ from konsepy.regex import search_first_regex
 
 
 @pytest.mark.parametrize('text, exp', [
-    ('Text excerpt containing concept.', ConceptCategory.CONCEPT_NAME),  # TODO: put tests here
+    ('Text excerpt containing concept.', ConceptCategory.YES),  # TODO: put tests here
     # add more tests
 ])
 def test_run_regexes(text, exp):
