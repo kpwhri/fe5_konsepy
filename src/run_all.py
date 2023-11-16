@@ -13,11 +13,13 @@ from config import PACKAGE_NAME
 
 
 def run_all_concepts(input_files, outdir: Path,
-                     id_label, noteid_label, notedate_label, notetext_label, noteorder_label=None):
+                     id_label, noteid_label, notedate_label, notetext_label, noteorder_label=None,
+                     incremental_output_only=False, concepts=None):
     run_all(input_files, outdir, PACKAGE_NAME,
             id_label=id_label, noteid_label=noteid_label,
             notedate_label=notedate_label, notetext_label=notetext_label,
-            noteorder_label=noteorder_label)
+            noteorder_label=noteorder_label, incremental_output_only=incremental_output_only,
+            concepts=concepts)
 
 
 if __name__ == '__main__':
