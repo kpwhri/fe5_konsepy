@@ -19,10 +19,5 @@ Types of changes:
 
 ### Added
 
-* `this`
-* demo on developing simple NLP for social support
-* `corpus_lined.csv` with README explaining the examples
-
-### Fixed
-
-* Bug in `run_concepts` which supplied `package_name` parameter twice
+* Added smoking history
+* Added history of attempted suicide
