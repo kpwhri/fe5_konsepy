@@ -24,6 +24,7 @@ class SuicideAttempt(enum.Enum):  # TODO: change 'Concept' to relevant concept n
     YES = 1
     HISTORY = 2
     FAMILY = 3
+    CODE = 4
 
 
 suicide_attempt = '(?:{})'.format('|'.join([
@@ -55,8 +56,6 @@ no = r'(?:no)'
 
 
 def check_if_other_subject(m, precontext, postcontext):
-    print(precontext)
-    print(postcontext)
     if has_other_subject(precontext) or has_other_subject(postcontext):
         return SuicideAttempt.FAMILY
     return None
@@ -70,6 +69,7 @@ REGEXES = [
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I), SuicideAttempt.NO),
     (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttempt.NO),
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
+    (re.compile(rf'\b(?:Z91.51|Z91.52|R45.88)\b'), SuicideAttempt.CODE),
 ]
 
 

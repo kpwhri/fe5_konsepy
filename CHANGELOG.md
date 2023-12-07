@@ -21,6 +21,7 @@ Types of changes:
 
 * Added smoking history
 * Added history of attempted suicide
+* Added icd codes
 
 ### Fixed
 

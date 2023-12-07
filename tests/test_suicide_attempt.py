@@ -23,6 +23,7 @@ from fe5_konsepy.concepts.suicide_attempt import SuicideAttempt, RUN_REGEXES_FUN
     ('history of suicide attempt: denied', SuicideAttempt.NO),
     ('suicide attempt in the past', SuicideAttempt.YES),
     ('sister had a suicide attempt in the past', SuicideAttempt.FAMILY),
+    ('Z91.51', SuicideAttempt.CODE),
 ])
 def test_suicide_attempt_regexes(text, exp):
     results = set(RUN_REGEXES_FUNC(text))
