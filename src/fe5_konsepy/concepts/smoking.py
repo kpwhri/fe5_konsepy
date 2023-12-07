@@ -56,7 +56,7 @@ REGEXES = [
 
 
 def search_all_regex_func(regexes):
-    """For each regex, return all (use finditer)"""
+    """For each regex, return all, but run 3rd argument if a function (use finditer)"""
 
     def _search_all_regex(text):
         for regex, category, *other in regexes:

@@ -14,8 +14,6 @@ Steps for creating a new category:
 import enum
 import re
 
-from konsepy.regex import search_all_regex
-
 
 class SuicideAttemptCategory(enum.Enum):  # TODO: change 'Concept' to relevant concept name
     """Start from 1; each must be distinct; use CAPITAL_LETTERS_WITH_UNDERSCORE is possible"""
@@ -54,8 +52,28 @@ REGEXES = [
     (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttemptCategory.NO),
     (re.compile(rf'\b{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttemptCategory.YES),
     (re.compile(rf'\b{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttemptCategory.YES),
+    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I), SuicideAttemptCategory.NO),
     (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttemptCategory.NO),
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttemptCategory.YES),
 ]
 
-RUN_REGEXES_FUNC = search_all_regex(REGEXES)  # find all occurrences of all regexes
+
+def search_and_replace_regex_func(regexes):
+    """Search, but replace found text to prevent double-matching"""
+
+    def _search_all_regex(text):
+        for regex, category in regexes:
+            text_pieces = []
+            prev_end = 0
+            for m in regex.finditer(text):
+                yield category
+                text_pieces.append(text[prev_end:m.start()])
+                text_pieces.append(f" {(len(m.group()) - 2) * '.'} ")
+                prev_end = m.end()
+            text_pieces.append(text[prev_end:])
+            text = ''.join(text_pieces)
+
+    return _search_all_regex
+
+
+RUN_REGEXES_FUNC = search_and_replace_regex_func(REGEXES)  # find all occurrences of all regexes
