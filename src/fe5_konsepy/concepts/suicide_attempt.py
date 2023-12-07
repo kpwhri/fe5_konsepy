@@ -30,13 +30,15 @@ suicide_attempt = '(?:{})'.format('|'.join([
     r'attempted\W*to\W*kill\W*(?:him|her)self',
 ]))
 
+day = r'(?:\d{1,2}\W*)'
+year = r'(?:\d{2,4})'
 in_period = r'(?:in|on|during)\W*(?:{})'.format('|'.join([
     'college', 'university', 'childhood', r'(?:high|middle)\W*school', r'jr\W*high',
-    r'(?:\d{1,2}\W*)?January', r'(?:\d{1,2}\W*)?February', r'(?:\d{1,2}\W*)?March',
-    r'(?:\d{1,2}\W*)?April', r'(?:\d{1,2}\W*)?May', r'(?:\d{1,2}\W*)?June',
-    r'(?:\d{1,2}\W*)?July', r'(?:\d{1,2}\W*)?August', r'(?:\d{1,2}\W*)?September',
-    r'(?:\d{1,2}\W*)?October', r'(?:\d{1,2}\W*)?November', r'(?:\d{1,2}\W*)?December',
-    r'(?:20|19)\d{2}', r'\d{1,2}/\d{1,4}',
+    rf'{day}?January\W*{year}?', rf'{day}?February\W*{year}?', rf'{day}?March\W*{year}?',
+    rf'{day}?April\W*{year}?', rf'{day}?May\W*{year}?', rf'{day}?June\W*{year}?',
+    rf'{day}?July\W*{year}?', rf'{day}?August\W*{year}?', rf'{day}?September\W*{year}?',
+    rf'{day}?October\W*{year}?', rf'{day}?November\W*{year}?', rf'{day}?December\W*{year}?',
+    r'(?:20|19)\d{2}', r'\d{1,2}/\d{1,4}(?:\d{2,4})?', 'the past',
 ]))
 
 period_ago = r'(?:\d+|(?:a\W*)?few|one|two|three|a|several)\W*(?:month|week|year|day)s?\W*ago'

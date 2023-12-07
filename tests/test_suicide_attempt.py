@@ -22,6 +22,7 @@ from konsepy.regex import search_first_regex
     ('family history of suicide attempt', SuicideAttemptCategory.NO),
     ('history of suicide attempt', SuicideAttemptCategory.YES),
     ('history of suicide attempt: denied', SuicideAttemptCategory.NO),
+    ('suicide attempt in the past', SuicideAttemptCategory.YES),
 ])
 def test_suicide_attempt_regexes(text, exp):
     results = set(search_first_regex(REGEXES)(text))
