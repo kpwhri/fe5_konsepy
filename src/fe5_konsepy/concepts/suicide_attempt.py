@@ -14,12 +14,16 @@ Steps for creating a new category:
 import enum
 import re
 
+from fe5_konsepy.other_subject import has_other_subject
+from fe5_konsepy.utils import get_precontext, get_postcontext, get_contexts
 
-class SuicideAttemptCategory(enum.Enum):  # TODO: change 'Concept' to relevant concept name
+
+class SuicideAttempt(enum.Enum):  # TODO: change 'Concept' to relevant concept name
     """Start from 1; each must be distinct; use CAPITAL_LETTERS_WITH_UNDERSCORE is possible"""
     NO = 0
     YES = 1
     HISTORY = 2
+    FAMILY = 3
 
 
 suicide_attempt = '(?:{})'.format('|'.join([
@@ -49,14 +53,23 @@ deny = r'(?:den(?:y|ies|ied))'
 family_hx = r'(?:family)'
 no = r'(?:no)'
 
+
+def check_if_other_subject(m, precontext, postcontext):
+    print(precontext)
+    print(postcontext)
+    if has_other_subject(precontext) or has_other_subject(postcontext):
+        return SuicideAttempt.FAMILY
+    return None
+
+
 REGEXES = [
-    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttemptCategory.NO),
-    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttemptCategory.NO),
-    (re.compile(rf'\b{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttemptCategory.YES),
-    (re.compile(rf'\b{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttemptCategory.YES),
-    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I), SuicideAttemptCategory.NO),
-    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttemptCategory.NO),
-    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttemptCategory.YES),
+    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttempt.NO),
+    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttempt.NO),
+    (re.compile(rf'\b{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
+    (re.compile(rf'\b{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
+    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I), SuicideAttempt.NO),
+    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttempt.NO),
+    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
 ]
 
 
@@ -64,11 +77,17 @@ def search_and_replace_regex_func(regexes):
     """Search, but replace found text to prevent double-matching"""
 
     def _search_all_regex(text):
-        for regex, category in regexes:
+        for regex, category, *other in regexes:
+            func = None
+            if len(other) > 0:
+                func = other[0]
             text_pieces = []
             prev_end = 0
             for m in regex.finditer(text):
-                yield category
+                if func and (res := func(m, **get_contexts(m, text, 20))):
+                    yield res
+                else:
+                    yield category
                 text_pieces.append(text[prev_end:m.start()])
                 text_pieces.append(f" {(len(m.group()) - 2) * '.'} ")
                 prev_end = m.end()
