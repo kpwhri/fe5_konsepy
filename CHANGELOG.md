@@ -21,3 +21,8 @@ Types of changes:
 
 * Added smoking history
 * Added history of attempted suicide
+
+### Fixed
+
+* Handle post-negation
+* Handle other subject/non-patient references
