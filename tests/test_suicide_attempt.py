@@ -1,6 +1,14 @@
+import random
+import string
+
 import pytest
 
 from fe5_konsepy.concepts.suicide_attempt import SuicideAttempt, RUN_REGEXES_FUNC
+
+
+def wordgen(n):
+    for i in range(n):
+        yield ''.join(random.choice(string.ascii_letters) for _ in range(10))
 
 
 @pytest.mark.parametrize('text, exp', [
@@ -24,6 +32,11 @@ from fe5_konsepy.concepts.suicide_attempt import SuicideAttempt, RUN_REGEXES_FUN
     ('history of suicide attempt: denied', SuicideAttempt.NO),
     ('suicide attempt in the past', SuicideAttempt.YES),
     ('sister had a suicide attempt in the past', SuicideAttempt.FAMILY),
+    ('problem list:\n' + '\n*'.join(wordgen(5)) + '\n* history of suicide attempt', SuicideAttempt.PROBLEM_LIST),
+    ('problem list\n' + '\n*'.join(wordgen(5)) + '\n* history of suicide attempt', SuicideAttempt.PROBLEM_LIST),
+    ('past medical history:\n' + '\n*'.join(wordgen(5)) + '\n* history of suicide attempt',
+     SuicideAttempt.PROBLEM_LIST),
+    ('problem list\n' + '\n*'.join(wordgen(5)) + 'ASSESSMENT: history of suicide attempt', SuicideAttempt.YES),
     ('Z91.51', SuicideAttempt.CODE),
 ])
 def test_suicide_attempt_regexes(text, exp):

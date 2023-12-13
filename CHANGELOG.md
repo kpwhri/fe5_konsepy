@@ -22,6 +22,7 @@ Types of changes:
 * Added smoking history
 * Added history of attempted suicide
 * Added icd codes
+* Added problem list to demonstrate when item appears to be in the problem list 
 
 ### Fixed
 

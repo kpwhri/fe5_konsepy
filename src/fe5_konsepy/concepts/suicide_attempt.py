@@ -64,13 +64,13 @@ def check_if_other_subject(m, precontext, postcontext, **kwargs):
 
 def check_if_in_problem_list(m, text, **kwargs):
     prev_match = None
-    for problist_match in re.finditer(r'(?:(?:PMH|Medical History):|problem list)', text, re.I):
+    for problist_match in re.finditer(r'(?:(?:PMH|Medical History):|problem list:?)', text, re.I):
         if problist_match.start() > m.end():  # occurs after current match
             break
         prev_match = problist_match
     if prev_match:
         target_text = text[prev_match.end():m.start()].lower()
-        for skipper in [':', 'Medications']:
+        for skipper in [':', 'medications']:
             if skipper in target_text:  # found section in between
                 return None
         return SuicideAttempt.PROBLEM_LIST
