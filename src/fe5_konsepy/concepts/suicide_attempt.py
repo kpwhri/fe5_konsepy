@@ -76,7 +76,7 @@ REGEXES = [
 def search_and_replace_regex_func(regexes):
     """Search, but replace found text to prevent double-matching"""
 
-    def _search_all_regex(text):
+    def _search_all_regex(text, include_match=False):
         for regex, category, *other in regexes:
             func = None
             if len(other) > 0:
@@ -85,9 +85,9 @@ def search_and_replace_regex_func(regexes):
             prev_end = 0
             for m in regex.finditer(text):
                 if func and (res := func(m, **get_contexts(m, text, 20))):
-                    yield res
+                    yield (res, m) if include_match else res
                 else:
-                    yield category
+                    yield (category, m) if include_match else category
                 text_pieces.append(text[prev_end:m.start()])
                 text_pieces.append(f" {(len(m.group()) - 2) * '.'} ")
                 prev_end = m.end()

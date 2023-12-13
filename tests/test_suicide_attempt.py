@@ -18,6 +18,7 @@ from fe5_konsepy.concepts.suicide_attempt import SuicideAttempt, RUN_REGEXES_FUN
     ('suicide attempt two months ago', SuicideAttempt.YES),
     ('suicide attempt several years ago', SuicideAttempt.YES),
     ('denies suicide attempt several years ago', SuicideAttempt.NO),
+    ('denied history of suicide attempt', SuicideAttempt.NO),
     ('family history of suicide attempt', SuicideAttempt.NO),
     ('history of suicide attempt', SuicideAttempt.YES),
     ('history of suicide attempt: denied', SuicideAttempt.NO),
