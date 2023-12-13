@@ -47,8 +47,10 @@ regular expressions each receive an individual label.
 
 * Concept name: `suicide_attempt`
 * Categories:
-    * `YES`
-    * `NO`
+    * `YES`: evidence for past attempt
+    * `NO`: denied past attempt
+    * `FAMILY`: past attempt associated with someone else (no necessarily family member)
+    * `CODE`: attempt identified from ICD code
 
 ### History of Smoking
 
