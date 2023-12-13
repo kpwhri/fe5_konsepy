@@ -25,6 +25,7 @@ class SuicideAttempt(enum.Enum):  # TODO: change 'Concept' to relevant concept n
     HISTORY = 2
     FAMILY = 3
     CODE = 4
+    PROBLEM_LIST = 5  # YES, in problem list
 
 
 suicide_attempt = '(?:{})'.format('|'.join([
@@ -55,37 +56,67 @@ family_hx = r'(?:family)'
 no = r'(?:no)'
 
 
-def check_if_other_subject(m, precontext, postcontext):
+def check_if_other_subject(m, precontext, postcontext, **kwargs):
     if has_other_subject(precontext) or has_other_subject(postcontext):
         return SuicideAttempt.FAMILY
     return None
 
 
+def check_if_in_problem_list(m, text, **kwargs):
+    prev_match = None
+    for problist_match in re.finditer(r'(?:(?:PMH|Medical History):|problem list)', text, re.I):
+        if problist_match.start() > m.end():  # occurs after current match
+            break
+        prev_match = problist_match
+    if prev_match:
+        target_text = text[prev_match.end():m.start()].lower()
+        for skipper in [':', 'Medications']:
+            if skipper in target_text:  # found section in between
+                return None
+        return SuicideAttempt.PROBLEM_LIST
+    else:
+        return None
+
+
 REGEXES = [
-    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttempt.NO),
-    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttempt.NO),
-    (re.compile(rf'\b{suicide_attempt}\W*{in_period}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
-    (re.compile(rf'\b{suicide_attempt}\W*{period_ago}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
-    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I), SuicideAttempt.NO),
-    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttempt.NO),
-    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I), SuicideAttempt.YES, check_if_other_subject),
-    (re.compile(rf'\b(?:Z91.51|Z91.52|R45.88)\b'), SuicideAttempt.CODE),
+    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{in_period}\b', re.I),
+     SuicideAttempt.NO),
+    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{period_ago}\b', re.I),
+     SuicideAttempt.NO),
+    (re.compile(rf'\b{suicide_attempt}\W*{in_period}\b', re.I),
+     SuicideAttempt.YES, [check_if_other_subject]),
+    (re.compile(rf'\b{suicide_attempt}\W*{period_ago}\b', re.I),
+     SuicideAttempt.YES, [check_if_other_subject]),
+    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I),
+     SuicideAttempt.NO),
+    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I),
+     SuicideAttempt.NO),
+    (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I),
+     SuicideAttempt.YES, [check_if_other_subject, check_if_in_problem_list]),
+    (re.compile(rf'\b(?:Z91.51|Z91.52|R45.88)\b'),
+     SuicideAttempt.CODE),
 ]
 
 
-def search_and_replace_regex_func(regexes):
+def search_and_replace_regex_func(regexes, window=20):
     """Search, but replace found text to prevent double-matching"""
 
     def _search_all_regex(text, include_match=False):
         for regex, category, *other in regexes:
-            func = None
+            funcs = None
             if len(other) > 0:
-                func = other[0]
+                funcs = other[0]
             text_pieces = []
             prev_end = 0
             for m in regex.finditer(text):
-                if func and (res := func(m, **get_contexts(m, text, 20))):
-                    yield (res, m) if include_match else res
+                found = None
+                if funcs:
+                    for func in funcs:  # parse function in order
+                        if res := func(m, **get_contexts(m, text, window)):
+                            found = (res, m) if include_match else res
+                            break
+                if found:
+                    yield found
                 else:
                     yield (category, m) if include_match else category
                 text_pieces.append(text[prev_end:m.start()])

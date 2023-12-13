@@ -15,4 +15,5 @@ def get_contexts(m, text, window=20):
     return {
         'precontext': get_precontext(m, text, window),
         'postcontext': get_postcontext(m, text, window),
+        'text': text,
     }
