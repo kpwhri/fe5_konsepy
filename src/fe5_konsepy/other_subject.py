@@ -19,5 +19,5 @@ OTHER_SUBJECT_RX = re.compile('(?:{})'.format(
 def has_other_subject(text):
     """Return first mention of other subject"""
     if m := OTHER_SUBJECT_RX.search(text):
-        return m.group()
+        return m
     return None

@@ -23,8 +23,10 @@ Types of changes:
 * Added history of attempted suicide
 * Added icd codes
 * Added problem list to demonstrate when item appears to be in the problem list 
+* Expanded `get_context` to reset context when searching the context of match
 
 ### Fixed
 
 * Handle post-negation
 * Handle other subject/non-patient references
+* Improved handling of other subject

@@ -49,15 +49,31 @@ in_period = r'(?:in|on|during)\W*(?:{})'.format('|'.join([
 
 period_ago = r'(?:\d+|(?:a\W*)?few|one|two|three|a|several)\W*(?:month|week|year|day)s?\W*ago'
 
-hx_of = r'(?:past|(?:history|hx)\W*of)'
+hx_of = r'(?:past|(?:history|hx)\W*of|previous|prior)'
 
 deny = r'(?:den(?:y|ies|ied))'
 family_hx = r'(?:family)'
 no = r'(?:no)'
+PER_PAT = re.compile(r'(?:per|according\W*to)(?:\W+\w+)?\W*$', re.I)
+OBJECT_PAT = re.compile(r'(?:\w+\W+)?(?:med\w*|gun|weapon)s?', re.I)
 
 
-def check_if_other_subject(m, precontext, postcontext, **kwargs):
-    if has_other_subject(precontext) or has_other_subject(postcontext):
+def is_not_other_subject(m, precontext, postcontext, **kwargs):
+    """Exceptions to other subject pattern"""
+    if PER_PAT.search(precontext) or OBJECT_PAT.search(postcontext):
+        return True
+
+
+def check_if_other_subject(m, precontext, postcontext, text, window, **kwargs):
+    if m2 := has_other_subject(precontext):
+        direction = -1
+    elif m2 := has_other_subject(postcontext):
+        direction = 1
+    if m2:
+        if is_not_other_subject(m2, **get_contexts(
+                m2, text, context_match=m, context_window=window, context_direction=direction
+        )):
+            return None
         return SuicideAttempt.FAMILY
     return None
 

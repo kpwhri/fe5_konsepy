@@ -38,6 +38,9 @@ def wordgen(n):
      SuicideAttempt.PROBLEM_LIST),
     ('problem list\n' + '\n*'.join(wordgen(5)) + 'ASSESSMENT: history of suicide attempt', SuicideAttempt.YES),
     ('Z91.51', SuicideAttempt.CODE),
+    ('suicide attempt a week ago per her husband', SuicideAttempt.YES),  # not FAMHX
+    ('suicide attempt a week ago using mother\'s medications', SuicideAttempt.YES),  # not FAMHX
+    ('suicide attempt a week ago using mother\'s pain meds', SuicideAttempt.YES),  # not FAMHX
 ])
 def test_suicide_attempt_regexes(text, exp):
     results = set(RUN_REGEXES_FUNC(text))
