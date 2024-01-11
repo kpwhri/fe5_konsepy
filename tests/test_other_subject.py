@@ -15,4 +15,7 @@ def test_other_subject(text, exp):
     ('patient', None),
 ])
 def test_other_subject_func(text, exp):
-    assert has_other_subject(text) == exp
+    if m := has_other_subject(text):
+        assert m.group() == exp
+    else:
+        assert m == exp
