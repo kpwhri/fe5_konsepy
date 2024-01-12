@@ -31,6 +31,7 @@ class SuicideAttempt(enum.Enum):  # TODO: change 'Concept' to relevant concept n
 suicide_attempt = '(?:{})'.format('|'.join([
     r'suicide\W+attempts?',
     r'deliberate\W*self\W*harm',
+    r'self\W*harm\W*behaviou?r',
     r'attempted\W*(?:to\W*commit\W*)?suicide',
     r'attempted\W*(?:\w+\W+){,2}to\W*take\W*(?:his|her)\W*(?:own\W*)?life',
     r'attempted\W*to\W*kill\W*(?:him|her)self',
@@ -51,15 +52,18 @@ in_period = r'(?:in|on|during)\W*(?:\w+\W+)?(?:{})'.format('|'.join([
 more_than = r'(?:(?:over|more\s*than)\W*)?'
 period_ago = rf'{more_than}(?:\d+|(?:a\W*)?few|one|two|three|a|several)\W*(?:month|week|year|day)s?\W*ago'
 as_a = r'(?:as a|when a)'
-role = r'(?:(?:college|high school)\W*)?(?:teen(?:ager)?|freshman|jr|junior|senior|sr|sophomore|student)'
-as_a_role = rf'{as_a}\W*{role}'
+role_label = r'(?:teen(?:ager)?|freshman|jr|junior|senior|sr|sophomore|student)'
+role_descript = r'(?:college|(?:high|middle) school)'
+role = rf'{role_label}\W*(?:in|at|during)\W*{role_descript}'
+role_rev = fr'(?:{role_descript}\W*)?{role_label}'
+as_a_role = rf'(?:{as_a}\W*(?:{role}|{role_rev}))'
 
 hx_of = r'(?:past|(?:history|hx)\W*of|previous|prior)'
 
 deny = r'(?:den(?:y|ies|ied))'
 family_hx = r'(?:family)'
 no = r'(?:no)'
-yes = r'(?:yes)'
+yes = r'(?:yes|briefly|previously)'
 number = r'(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen)'
 times = rf'(?:{number}\s*(?:x|times?))'
 more_than_times = rf'{more_than}{times}'

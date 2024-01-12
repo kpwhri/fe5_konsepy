@@ -24,7 +24,8 @@ Types of changes:
 * Added icd codes
 * Added problem list to demonstrate when item appears to be in the problem list 
 * Expanded `get_context` to reset context when searching the context of match
-* Expanded predicate for SAs: age, x times, as a teen
+* Expanded predicate for SAs: age, x times, as a teen with tests
+* Added 'self-harm behavior' to SA with tests
 
 ### Fixed
 
