@@ -17,6 +17,12 @@ Types of changes:
 
 ## [Unreleased]
 
+### Fixed
+
+* Handle where getting text snippets returned True rather than skipping
+
+## [0.0.1] - 2024-01-12
+
 ### Added
 
 * Added smoking history

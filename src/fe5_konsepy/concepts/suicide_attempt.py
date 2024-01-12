@@ -156,7 +156,7 @@ def search_and_replace_regex_func(regexes, window=20):
                             found = (res, m) if include_match else res
                             break
                 if found:
-                    if found is True:
+                    if found is True or (include_match and found[0] is True):
                         continue  # no result
                     yield found
                 else:
