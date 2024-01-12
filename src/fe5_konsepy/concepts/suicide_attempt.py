@@ -29,7 +29,7 @@ class SuicideAttempt(enum.Enum):  # TODO: change 'Concept' to relevant concept n
 
 
 suicide_attempt = '(?:{})'.format('|'.join([
-    r'suicide\W+attempt',
+    r'suicide\W+attempts?',
     r'deliberate\W*self\W*harm',
     r'attempted\W*(?:to\W*commit\W*)?suicide',
     r'attempted\W*(?:\w+\W+){,2}to\W*take\W*(?:his|her)\W*(?:own\W*)?life',
@@ -38,8 +38,9 @@ suicide_attempt = '(?:{})'.format('|'.join([
 
 day = r'(?:\d{1,2}\W*)'
 year = r'(?:\d{2,4})'
-in_period = r'(?:in|on|during)\W*(?:{})'.format('|'.join([
+in_period = r'(?:in|on|during)\W*(?:\w+\W+)?(?:{})'.format('|'.join([
     'college', 'university', 'childhood', r'(?:high|middle)\W*school', r'jr\W*high',
+    'teens', 'twenties', 'thirties', r'\d0s',
     rf'{day}?January\W*{year}?', rf'{day}?February\W*{year}?', rf'{day}?March\W*{year}?',
     rf'{day}?April\W*{year}?', rf'{day}?May\W*{year}?', rf'{day}?June\W*{year}?',
     rf'{day}?July\W*{year}?', rf'{day}?August\W*{year}?', rf'{day}?September\W*{year}?',
@@ -47,15 +48,27 @@ in_period = r'(?:in|on|during)\W*(?:{})'.format('|'.join([
     r'(?:20|19)\d{2}', r'\d{1,2}/\d{1,4}(?:\d{2,4})?', 'the past',
 ]))
 
-period_ago = r'(?:\d+|(?:a\W*)?few|one|two|three|a|several)\W*(?:month|week|year|day)s?\W*ago'
+more_than = r'(?:(?:over|more\s*than)\W*)?'
+period_ago = rf'{more_than}(?:\d+|(?:a\W*)?few|one|two|three|a|several)\W*(?:month|week|year|day)s?\W*ago'
+as_a = r'(?:as a|when a)'
+role = r'(?:(?:college|high school)\W*)?(?:teen(?:ager)?|freshman|jr|junior|senior|sr|sophomore|student)'
+as_a_role = rf'{as_a}\W*{role}'
 
 hx_of = r'(?:past|(?:history|hx)\W*of|previous|prior)'
 
 deny = r'(?:den(?:y|ies|ied))'
 family_hx = r'(?:family)'
 no = r'(?:no)'
-PER_PAT = re.compile(r'(?:per|according\W*to)(?:\W+\w+)?\W*$', re.I)
-OBJECT_PAT = re.compile(r'(?:\w+\W+)?(?:med\w*|gun|weapon)s?', re.I)
+yes = r'(?:yes)'
+number = r'(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen)'
+times = rf'(?:{number}\s*(?:x|times?))'
+more_than_times = rf'{more_than}{times}'
+age = rf'(?:at\W*)?age\W*{number}'
+sa_predicate = rf'(?:{in_period}|{period_ago}|{more_than_times}|{period_ago}|{as_a_role}|{age})'
+
+# per/according to/at X's house
+PER_PAT = re.compile(r'(?:per|according\W*to|at)(?:\W+\w+)?\W*$', re.I)
+OBJECT_PAT = re.compile(r'(?:\w+\W+)?(?:med\w*|gun|weapon|pill)s?', re.I)
 
 
 def is_not_other_subject(m, precontext, postcontext, **kwargs):
@@ -100,18 +113,20 @@ def check_if_in_problem_list(m, text, **kwargs):
 
 
 REGEXES = [
-    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{in_period}\b', re.I),
+    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{sa_predicate}\b', re.I),
      SuicideAttempt.NO),
-    (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{period_ago}\b', re.I),
-     SuicideAttempt.NO),
-    (re.compile(rf'\b{suicide_attempt}\W*{in_period}\b', re.I),
-     SuicideAttempt.YES, [check_if_other_subject]),
-    (re.compile(rf'\b{suicide_attempt}\W*{period_ago}\b', re.I),
+    # must be above SA SA_pred due to 'denies hx of SA in teens'
+    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I),
+     SuicideAttempt.NO, [check_if_colon_before]),
+    (re.compile(rf'\b{suicide_attempt}\W*{sa_predicate}\b', re.I),
      SuicideAttempt.YES, [check_if_other_subject]),
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I),
      SuicideAttempt.NO),
-    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I),
-     SuicideAttempt.NO, [check_if_colon_before]),
+    # specific (optional <- these get caught by next regex; can't move up otherwise 'denied hx of sa in teens')
+    (re.compile(
+        rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{yes}|{number}|{sa_predicate})\b', re.I),
+     SuicideAttempt.YES),
+    # more generic
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I),
      SuicideAttempt.YES, [check_if_other_subject, check_if_in_problem_list]),
     (re.compile(rf'\b(?:Z91.51|Z91.52|R45.88)\b'),

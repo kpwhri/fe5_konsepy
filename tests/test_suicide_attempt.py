@@ -42,6 +42,15 @@ def wordgen(n):
     ('suicide attempt a week ago using mother\'s medications', SuicideAttempt.YES),  # not FAMHX
     ('suicide attempt a week ago using mother\'s pain meds', SuicideAttempt.YES),  # not FAMHX
     ('hospitalisation: denies history of suicide attempt: yes', SuicideAttempt.YES),  # not NO
+    ('suicide attempt at age 15', SuicideAttempt.YES),
+    ('suicide attempt in her teens', SuicideAttempt.YES),
+    ('suicide attempt in his 30s', SuicideAttempt.YES),
+    ('suicide attempt 3x', SuicideAttempt.YES),
+    ('suicide attempt 3 times', SuicideAttempt.YES),
+    ('hx of suicide attempt at cousin\'s house', SuicideAttempt.YES),
+    ('hx of suicide attempt 3 times', SuicideAttempt.YES),
+    ('denied hx of suicide attempt in teens', SuicideAttempt.NO),
+    ('denied suicide attempt in teens', SuicideAttempt.NO),
 ])
 def test_suicide_attempt_regexes(text, exp):
     results = set(RUN_REGEXES_FUNC(text))

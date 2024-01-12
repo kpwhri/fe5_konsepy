@@ -24,6 +24,7 @@ Types of changes:
 * Added icd codes
 * Added problem list to demonstrate when item appears to be in the problem list 
 * Expanded `get_context` to reset context when searching the context of match
+* Expanded predicate for SAs: age, x times, as a teen
 
 ### Fixed
 
@@ -31,3 +32,4 @@ Types of changes:
 * Handle other subject/non-patient references
 * Improved handling of other subject
 * Don't take preceding 'denied' if preceded by colon
+* Reordered regexes to handle 'denies hx of SA in college'
