@@ -62,7 +62,7 @@ hx_of = r'(?:past|(?:history|hx)\W*of|previous|prior)'
 
 deny = r'(?:den(?:y|ies|ied))'
 family_hx = r'(?:family)'
-no = r'(?:no)'
+no = r'(?:no|or|nor)'
 yes = r'(?:yes|briefly|previously)'
 number = r'(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen)'
 times = rf'(?:{number}\s*(?:x|times?))'

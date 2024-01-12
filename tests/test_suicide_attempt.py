@@ -56,6 +56,8 @@ def wordgen(n):
     ('self-harm behavior: in middle school', SuicideAttempt.YES),
     ('self-harm behavior: as a student in middle school', SuicideAttempt.YES),
     ('history of deliberate self-harm', SuicideAttempt.YES),
+    ('or history of deliberate self-harm', SuicideAttempt.NO),
+    ('nor history of deliberate self-harm', SuicideAttempt.NO),
 ])
 def test_suicide_attempt_regexes(text, exp):
     results = set(RUN_REGEXES_FUNC(text))
