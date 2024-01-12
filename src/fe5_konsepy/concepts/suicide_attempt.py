@@ -78,6 +78,11 @@ def check_if_other_subject(m, precontext, postcontext, text, window, **kwargs):
     return None
 
 
+def check_if_colon_before(m, precontext, **kwargs):
+    if precontext.strip().endswith(':'):
+        return True
+
+
 def check_if_in_problem_list(m, text, **kwargs):
     prev_match = None
     for problist_match in re.finditer(r'(?:(?:PMH|Medical History):|problem list:?)', text, re.I):
@@ -106,7 +111,7 @@ REGEXES = [
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I),
      SuicideAttempt.NO),
     (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I),
-     SuicideAttempt.NO),
+     SuicideAttempt.NO, [check_if_colon_before]),
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\b', re.I),
      SuicideAttempt.YES, [check_if_other_subject, check_if_in_problem_list]),
     (re.compile(rf'\b(?:Z91.51|Z91.52|R45.88)\b'),
@@ -132,6 +137,8 @@ def search_and_replace_regex_func(regexes, window=20):
                             found = (res, m) if include_match else res
                             break
                 if found:
+                    if found is True:
+                        continue  # no result
                     yield found
                 else:
                     yield (category, m) if include_match else category

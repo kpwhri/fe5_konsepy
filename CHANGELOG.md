@@ -30,3 +30,4 @@ Types of changes:
 * Handle post-negation
 * Handle other subject/non-patient references
 * Improved handling of other subject
+* Don't take preceding 'denied' if preceded by colon
