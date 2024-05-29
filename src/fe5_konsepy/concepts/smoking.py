@@ -3,6 +3,8 @@ import re
 
 from konsepy.regex import search_all_regex
 
+from fe5_konsepy.other_subject import has_other_subject
+
 
 class SmokingCategory(enum.Enum):
     """Start from 1; each must be distinct; use CAPITAL_LETTERS_WITH_UNDERSCORE is possible"""
@@ -12,6 +14,7 @@ class SmokingCategory(enum.Enum):
     HISTORY = 2
     NEVER = 3
     YES = 4
+    FAMILY = 5
 
 
 history = '(?:history|hx)'
@@ -61,6 +64,16 @@ def check_if_before(n_chars, regex, newcategory):
     return _check_if_before
 
 
+def has_other_subject_before(newcategory):
+    def _has_other_subject_before(m, text):
+        text = text[max(0, m.start() - 20): m.start()]
+        if has_other_subject(text):
+            return newcategory
+        return None
+
+    return _has_other_subject_before
+
+
 def check_sentence_is_question(newcategory):
     def _check_sentence_is_question(m, text):
         for letter in text[m.end():]:
@@ -76,7 +89,8 @@ def check_if_hypothetical():
     pre_func = check_if_before(20, re.compile(r'\bor\b', re.I), SmokingCategory.UNKNOWN)
     post_func = check_if_after(20, re.compile(r'\bor\b', re.I), SmokingCategory.UNKNOWN)
     question_func = check_sentence_is_question(SmokingCategory.UNKNOWN)
-    funcs = [pre_func, post_func, question_func]
+    other_subject_func = has_other_subject_before(SmokingCategory.FAMILY)
+    funcs = [pre_func, post_func, question_func, other_subject_func]
 
     def _check_if_hypothetical(m, text):
         for func in funcs:
@@ -89,10 +103,16 @@ def check_if_hypothetical():
 
 REGEXES = [
     (re.compile(rf'\b{smoking_history}\b', re.I), SmokingCategory.HISTORY),
-    (re.compile(rf'\b{former}\W*{smoker}\b', re.I), SmokingCategory.HISTORY),
-    (re.compile(rf'\b{no_longer}\W*{smoking}\b', re.I), SmokingCategory.HISTORY),
+    (re.compile(rf'\b{former}\W*{smoker}\b', re.I), SmokingCategory.HISTORY,
+     has_other_subject_before(SmokingCategory.FAMILY),
+     ),
+    (re.compile(rf'\b{no_longer}\W*{smoking}\b', re.I), SmokingCategory.HISTORY,
+     has_other_subject_before(SmokingCategory.FAMILY),
+     ),
     (re.compile(rf'\bnever\W*{smoking}\b', re.I), SmokingCategory.NEVER),
-    (re.compile(rf'\b{current}\W*{smoker}\b', re.I), SmokingCategory.CURRENT),
+    (re.compile(rf'\b{current}\W*{smoker}\b', re.I), SmokingCategory.CURRENT,
+     has_other_subject_before(SmokingCategory.FAMILY),
+     ),
     (re.compile(rf'\b{packs_per_day}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NO,
      check_if_zero(SmokingCategory.CURRENT)
      ),

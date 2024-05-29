@@ -22,6 +22,7 @@ Types of changes:
 * Handle where getting text snippets returned True rather than skipping
 * Fix 'Smoking status: never assessed'
 * Fix hypothetical/questions sentences
+* Account for other subject (e.g., family)
 
 ## [0.0.1] - 2024-01-12
 

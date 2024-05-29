@@ -27,6 +27,12 @@ from fe5_konsepy.concepts.smoking import SmokingCategory, RUN_REGEXES_FUNC
     ('smokes cigarettes?', SmokingCategory.UNKNOWN),
     ('smokes tobacco or marijuana', SmokingCategory.UNKNOWN),
     ('parent or caregiver that smokes tobacco', SmokingCategory.UNKNOWN),
+    ('quit smoking', SmokingCategory.HISTORY),
+    ('father quit smoking', SmokingCategory.FAMILY),
+    ('grandmother is former smoker', SmokingCategory.FAMILY),
+    ('former smoker', SmokingCategory.HISTORY),
+    ('aunt is a current smoker', SmokingCategory.FAMILY),
+    ('current smoker', SmokingCategory.CURRENT),
 ])
 def test_smoking_category(text, exp):
     results = set(RUN_REGEXES_FUNC(text))
