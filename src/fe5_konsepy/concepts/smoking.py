@@ -70,7 +70,7 @@ REGEXES = [
      check_if_zero()
      ),
     (re.compile(rf'\b{smoking_status}\W*{never}\b', re.I), SmokingCategory.NEVER,
-     check_if_after(20, re.compile(r'assessed', re.I), SmokingCategory.UNKNOWN)
+     check_if_after(20, re.compile(r'(?:assessed|asked)', re.I), SmokingCategory.UNKNOWN)
      ),
     (re.compile(rf'\b{smoking_status}\W*(?:{former})\b', re.I), SmokingCategory.HISTORY),
     (re.compile(rf'\b{smoking_status}\W*(?:{current})\b', re.I), SmokingCategory.CURRENT),
