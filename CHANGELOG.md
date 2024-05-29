@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## [0.0.2] - 2024-05-29
+
 ### Fixed
 
 * Handle where getting text snippets returned True rather than skipping
