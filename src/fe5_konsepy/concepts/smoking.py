@@ -30,11 +30,14 @@ curr_smokes = r'(?:smokes)'
 past_smoked = r'(?:smoked|used to smoke)'
 
 
-def check_if_zero(m):
-    val = float(m.group('num'))
-    if val:
-        return SmokingCategory.HISTORY
-    return None
+def check_if_zero(default_value=SmokingCategory.HISTORY):
+    def _check_if_zero(m):
+        val = float(m.group('num'))
+        if val:
+            return default_value
+        return None
+
+    return _check_if_zero
 
 
 REGEXES = [
@@ -43,10 +46,12 @@ REGEXES = [
     (re.compile(rf'\b{no_longer}\W*{smoking}\b', re.I), SmokingCategory.HISTORY),
     (re.compile(rf'\bnever\W*{smoking}\b', re.I), SmokingCategory.NEVER),
     (re.compile(rf'\b{current}\W*{smoker}\b', re.I), SmokingCategory.CURRENT),
-    (re.compile(rf'\b{packs_per_day}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NO, check_if_zero),
-    (re.compile(rf'\b{pack_years}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NEVER, check_if_zero),
-    (re.compile(rf'\b(?P<num>{digit})\W*{packs_per_day}\b', re.I), SmokingCategory.NO, check_if_zero),
-    (re.compile(rf'\b(?P<num>{digit})\W*{pack_years}\b', re.I), SmokingCategory.NEVER, check_if_zero),
+    (re.compile(rf'\b{packs_per_day}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NO,
+     check_if_zero(SmokingCategory.CURRENT)),
+    (re.compile(rf'\b{pack_years}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NEVER, check_if_zero()),
+    (re.compile(rf'\b(?P<num>{digit})\W*{packs_per_day}\b', re.I), SmokingCategory.NO,
+     check_if_zero(SmokingCategory.CURRENT)),
+    (re.compile(rf'\b(?P<num>{digit})\W*{pack_years}\b', re.I), SmokingCategory.NEVER, check_if_zero()),
     (re.compile(rf'\b{smoking_status}\W*{never}\b', re.I), SmokingCategory.NEVER),
     (re.compile(rf'\b{smoking_status}\W*(?:{former})\b', re.I), SmokingCategory.HISTORY),
     (re.compile(rf'\b{smoking_status}\W*(?:{current})\b', re.I), SmokingCategory.CURRENT),

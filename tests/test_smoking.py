@@ -7,11 +7,14 @@ from fe5_konsepy.concepts.smoking import SmokingCategory, RUN_REGEXES_FUNC
     ('positive smoking history', SmokingCategory.HISTORY),
     ('former smoker', SmokingCategory.HISTORY),
     ('quit smoking', SmokingCategory.HISTORY),
-    ('packs/day: 0.25', SmokingCategory.HISTORY),
+    ('packs/day: 0.25', SmokingCategory.CURRENT),
     ('pack years: 63.00', SmokingCategory.HISTORY),
+    ('pack years: 0', SmokingCategory.NEVER),
+    ('pack years: 0.00', SmokingCategory.NEVER),
     ('packs/day: 0', SmokingCategory.NO),
-    ('packs per day 1', SmokingCategory.HISTORY),
-    ('1 pack per day', SmokingCategory.HISTORY),
+    ('packs/day: 0.0', SmokingCategory.NO),
+    ('packs per day 1', SmokingCategory.CURRENT),
+    ('1 pack per day', SmokingCategory.CURRENT),
     ('current smoker', SmokingCategory.CURRENT),
     ('smoking tobacco use: never', SmokingCategory.NEVER),
     ('smoking status: never', SmokingCategory.NEVER),
@@ -19,8 +22,7 @@ from fe5_konsepy.concepts.smoking import SmokingCategory, RUN_REGEXES_FUNC
     ('smokes cigarettes', SmokingCategory.CURRENT),
     ('smoked marijuana', SmokingCategory.HISTORY),
     ('10 pack-year smoker', SmokingCategory.HISTORY),
-
 ])
-def test_suicide_attempt_regexes(text, exp):
+def test_smoking_category(text, exp):
     results = set(RUN_REGEXES_FUNC(text))
     assert exp in results
