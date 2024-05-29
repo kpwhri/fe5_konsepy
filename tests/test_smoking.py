@@ -22,6 +22,7 @@ from fe5_konsepy.concepts.smoking import SmokingCategory, RUN_REGEXES_FUNC
     ('smokes cigarettes', SmokingCategory.CURRENT),
     ('smoked marijuana', SmokingCategory.HISTORY),
     ('10 pack-year smoker', SmokingCategory.HISTORY),
+    ('smoking status: never assessed', SmokingCategory.UNKNOWN),
 ])
 def test_smoking_category(text, exp):
     results = set(RUN_REGEXES_FUNC(text))

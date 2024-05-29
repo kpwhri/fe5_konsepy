@@ -20,6 +20,7 @@ Types of changes:
 ### Fixed
 
 * Handle where getting text snippets returned True rather than skipping
+* Fix 'Smoking status: never assessed'
 
 ## [0.0.1] - 2024-01-12
 

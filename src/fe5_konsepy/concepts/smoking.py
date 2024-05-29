@@ -6,6 +6,7 @@ from konsepy.regex import search_all_regex
 
 class SmokingCategory(enum.Enum):
     """Start from 1; each must be distinct; use CAPITAL_LETTERS_WITH_UNDERSCORE is possible"""
+    UNKNOWN = -1
     NO = 0
     CURRENT = 1
     HISTORY = 2
@@ -31,13 +32,23 @@ past_smoked = r'(?:smoked|used to smoke)'
 
 
 def check_if_zero(default_value=SmokingCategory.HISTORY):
-    def _check_if_zero(m):
+    def _check_if_zero(m, text):
         val = float(m.group('num'))
         if val:
             return default_value
         return None
 
     return _check_if_zero
+
+
+def check_if_after(n_chars, regex, newcategory):
+    def _check_if_after(m, text):
+        text = text[m.end(): m.end() + n_chars]
+        if regex.search(text):
+            return newcategory
+        return None
+
+    return _check_if_after
 
 
 REGEXES = [
@@ -47,12 +58,20 @@ REGEXES = [
     (re.compile(rf'\bnever\W*{smoking}\b', re.I), SmokingCategory.NEVER),
     (re.compile(rf'\b{current}\W*{smoker}\b', re.I), SmokingCategory.CURRENT),
     (re.compile(rf'\b{packs_per_day}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NO,
-     check_if_zero(SmokingCategory.CURRENT)),
-    (re.compile(rf'\b{pack_years}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NEVER, check_if_zero()),
+     check_if_zero(SmokingCategory.CURRENT)
+     ),
+    (re.compile(rf'\b{pack_years}\W*(?P<num>{digit})\b', re.I), SmokingCategory.NEVER,
+     check_if_zero()
+     ),
     (re.compile(rf'\b(?P<num>{digit})\W*{packs_per_day}\b', re.I), SmokingCategory.NO,
-     check_if_zero(SmokingCategory.CURRENT)),
-    (re.compile(rf'\b(?P<num>{digit})\W*{pack_years}\b', re.I), SmokingCategory.NEVER, check_if_zero()),
-    (re.compile(rf'\b{smoking_status}\W*{never}\b', re.I), SmokingCategory.NEVER),
+     check_if_zero(SmokingCategory.CURRENT)
+     ),
+    (re.compile(rf'\b(?P<num>{digit})\W*{pack_years}\b', re.I), SmokingCategory.NEVER,
+     check_if_zero()
+     ),
+    (re.compile(rf'\b{smoking_status}\W*{never}\b', re.I), SmokingCategory.NEVER,
+     check_if_after(20, re.compile(r'assessed', re.I), SmokingCategory.UNKNOWN)
+     ),
     (re.compile(rf'\b{smoking_status}\W*(?:{former})\b', re.I), SmokingCategory.HISTORY),
     (re.compile(rf'\b{smoking_status}\W*(?:{current})\b', re.I), SmokingCategory.CURRENT),
     (re.compile(rf'\b{curr_smokes}\W*{smoke_target}\b', re.I), SmokingCategory.CURRENT),
@@ -69,7 +88,7 @@ def search_all_regex_func(regexes):
             if len(other) > 0:
                 func = other[0]
             for m in regex.finditer(text):
-                if func and (res := func(m)):
+                if func and (res := func(m, text)):
                     yield res
                 else:
                     yield category
