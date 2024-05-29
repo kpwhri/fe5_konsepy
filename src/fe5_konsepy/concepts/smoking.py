@@ -26,7 +26,7 @@ pack_years = r'(?:pack\W*years?)'
 digit = r'(?:\d+(?:\.\d+)?)'
 smoking_status = r'(?:smoking|tobacco)\W*(?:use|usage|status)'
 never = r'(?:never|no(?:ne)?)'
-smoke_target = r'(?:marijuana|cigarettes?|cigars?)'
+smoke_target = r'(?:marijuana|tobacco|cigarettes?|cigars?)'
 curr_smokes = r'(?:smokes)'
 past_smoked = r'(?:smoked|used to smoke)'
 
@@ -49,6 +49,42 @@ def check_if_after(n_chars, regex, newcategory):
         return None
 
     return _check_if_after
+
+
+def check_if_before(n_chars, regex, newcategory):
+    def _check_if_before(m, text):
+        text = text[max(0, m.start() - n_chars): m.start()]
+        if regex.search(text):
+            return newcategory
+        return None
+
+    return _check_if_before
+
+
+def check_sentence_is_question(newcategory):
+    def _check_sentence_is_question(m, text):
+        for letter in text[m.end():]:
+            if letter in {';', '.', '!'}:
+                return None
+            elif letter in {'?'}:
+                return newcategory
+
+    return _check_sentence_is_question
+
+
+def check_if_hypothetical():
+    pre_func = check_if_before(20, re.compile(r'\bor\b', re.I), SmokingCategory.UNKNOWN)
+    post_func = check_if_after(20, re.compile(r'\bor\b', re.I), SmokingCategory.UNKNOWN)
+    question_func = check_sentence_is_question(SmokingCategory.UNKNOWN)
+    funcs = [pre_func, post_func, question_func]
+
+    def _check_if_hypothetical(m, text):
+        for func in funcs:
+            if cat := func(m, text):
+                return cat
+        return None
+
+    return _check_if_hypothetical
 
 
 REGEXES = [
@@ -74,8 +110,12 @@ REGEXES = [
      ),
     (re.compile(rf'\b{smoking_status}\W*(?:{former})\b', re.I), SmokingCategory.HISTORY),
     (re.compile(rf'\b{smoking_status}\W*(?:{current})\b', re.I), SmokingCategory.CURRENT),
-    (re.compile(rf'\b{curr_smokes}\W*{smoke_target}\b', re.I), SmokingCategory.CURRENT),
-    (re.compile(rf'\b{past_smoked}\W*{smoke_target}\b', re.I), SmokingCategory.HISTORY),
+    (re.compile(rf'\b{curr_smokes}\W*{smoke_target}\b', re.I), SmokingCategory.CURRENT,
+     check_if_hypothetical(),
+     ),
+    (re.compile(rf'\b{past_smoked}\W*{smoke_target}\b', re.I), SmokingCategory.HISTORY,
+     check_if_hypothetical(),
+     ),
 ]
 
 
