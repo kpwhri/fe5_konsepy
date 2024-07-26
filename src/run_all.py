@@ -14,7 +14,7 @@ from config import PACKAGE_NAME
 
 def run_all_concepts(input_files, outdir: Path,
                      id_label, noteid_label, notedate_label, notetext_label, noteorder_label=None,
-                     incremental_output_only=False, concepts=None):
+                     incremental_output_only=False, concepts=None, **kwargs):
     run_all(input_files, outdir, PACKAGE_NAME,
             id_label=id_label, noteid_label=noteid_label,
             notedate_label=notedate_label, notetext_label=notetext_label,
