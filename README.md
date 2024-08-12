@@ -41,6 +41,11 @@ regular expressions each receive an individual label.
               by `note_id, note_line`)
         * corpus may contain other columns which will be ignored
 
+### Running
+
+* To run the pipeline on a CSV file:
+   * `python src/run_all.py --input-files sample/corpus.csv --outdir out --id-label studyid`
+
 ## Variables
 
 ### History of Attempted Suicide
