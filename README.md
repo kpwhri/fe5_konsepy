@@ -28,6 +28,7 @@ regular expressions each receive an individual label.
         * Now, `python` will run from the command line
 * Install required packages:
     * `pip install requirements.txt`
+    * OR `pip install .`
 * A corpus file
     * In the future, other data sources will be included, for now it must be `csv`, `jsonl`, `sas7bdat`
     * Columns (these can be configured to use different names, but it's easiest if you select these names)
