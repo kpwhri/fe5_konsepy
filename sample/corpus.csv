@@ -1,4 +1,5 @@
 studyid,note_id,note_text
-0,0,"Patient has limited social support. She is actively looking for transportation options to get treatement."
+0,0,"Patient is former smoker. She has limited social support. She is actively looking for transportation options to get treatement."
 0,1,"She feels lonely and isolated. Most of her friends have died, and her limited family remains distant. Her son occasionally comes to help out."
 1,2,"She doesn't feel lonely, but has numerous friends that have come to support her through this difficult time. Her primary complaint is that sometimes it feels she has too much support."
+2,3,"Had a suicide attempt a year ago."
