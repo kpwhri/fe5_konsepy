@@ -142,16 +142,16 @@ REGEXES = [
 def search_all_regex_func(regexes):
     """For each regex, return all, but run 3rd argument if a function (use finditer)"""
 
-    def _search_all_regex(text):
+    def _search_all_regex(text, include_match=False):
         for regex, category, *other in regexes:
             func = None
             if len(other) > 0:
                 func = other[0]
             for m in regex.finditer(text):
                 if func and (res := func(m, text)):
-                    yield res
+                    yield (res, m) if include_match else res
                 else:
-                    yield category
+                    yield (category, m) if include_match else res
 
     return _search_all_regex
 
