@@ -20,12 +20,13 @@ regular expressions each receive an individual label.
 * Python 3.9+
 * Download/clone this project
     * The path to this location will be referred to as `$PATH` in the instructions below (this might be `C:\code`, etc.)
-* (Optional) setup a virtual environment to isolate this particular installation
+* (Optional, but recommended) setup a virtual environment to isolate this particular installation
     * `cd $PATH\fe5_konsepy`
     * `python -m venv .venv`
         * The full path to `python.exe` might need to be specified in this command
-    * Activate: `.venv/scripts/activate.[ps1|sh]`
-        * Now, `python` will run from the command line
+    * Activate:
+      * Powershell: `.venv/scripts/activate.ps1`
+      * Linux/Mac: `source .venv/bin/activate`
 * Install required packages:
     * `pip install requirements.txt`
     * OR `pip install .`
