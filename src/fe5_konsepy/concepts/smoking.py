@@ -151,7 +151,7 @@ def search_all_regex_func(regexes):
                 if func and (res := func(m, text)):
                     yield (res, m) if include_match else res
                 else:
-                    yield (category, m) if include_match else res
+                    yield (category, m) if include_match else category
 
     return _search_all_regex
 
