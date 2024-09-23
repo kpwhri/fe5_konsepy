@@ -41,7 +41,7 @@ regular expressions each receive an individual label.
           specify this to join them
             * If using `note_line`, all portions of the note are assumed to appear together in the dataset (i.e., order
               by `note_id, note_line`)
-        * corpus may contain other columns which will be ignored
+        * corpus may contain other columns which will be ignored 
 
 ### Running
 
@@ -51,6 +51,12 @@ regular expressions each receive an individual label.
   * `python src/run_concept.py --input-files sample/corpus.csv --outdir out --id-label studyid --concept smoking`
 * To run just the `suicide_attempt` pipeline on a CSV file:
   * `python src/run_concept.py --input-files sample/corpus.csv --outdir out --id-label studyid --concept suicide_attempt`
+
+If you need to specify different headers/variables/labels to your corpus file, use the following command line arguments (the defaults are shown):
+* `--id-label studyid`
+* `--noteid-label note_id`
+* `--notedate-label note_date`
+* `--notetext-label note_text`
 
 ## Variables
 
