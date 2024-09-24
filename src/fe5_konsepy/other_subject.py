@@ -12,6 +12,7 @@ OTHER_SUBJECT_RX = re.compile('(?:{})'.format(
         'people', 'friend', 'kid', 'peer',
         'physician', 'doctor', 'family', r'co\W?worker',
         r'(?:house|room|flat)\W?mate', 'colleague', 'employe[re]', 'others',
+        'family (?:history|hx)',
     ]))
 )
 

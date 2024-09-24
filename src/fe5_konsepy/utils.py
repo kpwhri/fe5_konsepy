@@ -22,7 +22,7 @@ def get_contexts(m, text, window=20, context_match=None, context_window=None, co
     """
     if context_match:
         if context_direction == -1:
-            offset = context_match.start() - context_window
+            offset = max(0, context_match.start() - context_window)
             start = offset + m.start()
             end = offset + m.end()
         elif context_direction == 1:

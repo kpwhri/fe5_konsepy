@@ -27,11 +27,13 @@ def wordgen(n):
     ('suicide attempt several years ago', SuicideAttempt.YES),
     ('denies suicide attempt several years ago', SuicideAttempt.NO),
     ('denied history of suicide attempt', SuicideAttempt.NO),
+    ('not had previous suicide attempt', SuicideAttempt.NO),
     ('family history of suicide attempt', SuicideAttempt.NO),
     ('history of suicide attempt', SuicideAttempt.YES),
     ('history of suicide attempt: denied', SuicideAttempt.NO),
     ('suicide attempt in the past', SuicideAttempt.YES),
     ('sister had a suicide attempt in the past', SuicideAttempt.FAMILY),
+    ('family history: one had suicide attempt in the past', SuicideAttempt.FAMILY),
     ('problem list:\n' + '\n*'.join(wordgen(5)) + '\n* history of suicide attempt', SuicideAttempt.PROBLEM_LIST),
     ('problem list\n' + '\n*'.join(wordgen(5)) + '\n* history of suicide attempt', SuicideAttempt.PROBLEM_LIST),
     ('past medical history:\n' + '\n*'.join(wordgen(5)) + '\n* history of suicide attempt',
@@ -43,6 +45,7 @@ def wordgen(n):
     ('suicide attempt a week ago using mother\'s pain meds', SuicideAttempt.YES),  # not FAMHX
     ('hospitalisation: denies history of suicide attempt: yes', SuicideAttempt.YES),  # not NO
     ('suicide attempt at age 15', SuicideAttempt.YES),
+    ('suicide attempt approximately one year ago', SuicideAttempt.YES),
     ('suicide attempt in her teens', SuicideAttempt.YES),
     ('suicide attempt in his 30s', SuicideAttempt.YES),
     ('suicide attempt 3x', SuicideAttempt.YES),

@@ -49,7 +49,8 @@ in_period = r'(?:in|on|during)\W*(?:\w+\W+)?(?:{})'.format('|'.join([
     r'(?:20|19)\d{2}', r'\d{1,2}/\d{1,4}(?:\d{2,4})?', 'the past',
 ]))
 
-more_than = r'(?:(?:over|more\s*than)\W*)?'
+approximately = rf'(?:about|approximately|almost|close\W*to|nearly|just\W*about)'
+more_than = fr'(?:(?:over|(?:more|less)\s*than|{approximately})\W*)?'
 period_ago = rf'{more_than}(?:\d+|(?:a\W*)?few|one|two|three|a|several)\W*(?:month|week|year|day)s?\W*ago'
 as_a = r'(?:as a|when a)'
 role_label = r'(?:teen(?:ager)?|freshman|jr|junior|senior|sr|sophomore|student)'
@@ -62,16 +63,16 @@ hx_of = r'(?:past|(?:history|hx)\W*of|previous|prior)'
 
 deny = r'(?:den(?:y|ies|ied))'
 family_hx = r'(?:family)'
-no = r'(?:no|or|nor)'
+no = r'(?:no|or|nor|not)'
 yes = r'(?:yes|briefly|previously)'
 number = r'(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen)'
 times = rf'(?:{number}\s*(?:x|times?))'
 more_than_times = rf'{more_than}{times}'
 age = rf'(?:at\W*)?age\W*{number}'
-sa_predicate = rf'(?:{in_period}|{period_ago}|{more_than_times}|{period_ago}|{as_a_role}|{age})'
+sa_predicate = rf'(?:{approximately}\W*)?(?:{in_period}|{period_ago}|{more_than_times}|{as_a_role}|{age})'
 
 # per/according to/at X's house
-PER_PAT = re.compile(r'(?:per|according\W*to|at)(?:\W+\w+)?\W*$', re.I)
+PER_PAT = re.compile(r'(?:\bper\b|according\W*to|\bat\b)(?:\W+\w+)?\W*$', re.I)
 OBJECT_PAT = re.compile(r'(?:\w+\W+)?(?:med\w*|gun|weapon|pill)s?', re.I)
 
 
@@ -120,7 +121,7 @@ REGEXES = [
     (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{sa_predicate}\b', re.I),
      SuicideAttempt.NO),
     # must be above SA SA_pred due to 'denies hx of SA in teens'
-    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*{hx_of}\W*{suicide_attempt}\b', re.I),
+    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*(?:\w+\W*)?{hx_of}\W*{suicide_attempt}\b', re.I),
      SuicideAttempt.NO, [check_if_colon_before]),
     (re.compile(rf'\b{suicide_attempt}\W*{sa_predicate}\b', re.I),
      SuicideAttempt.YES, [check_if_other_subject]),
@@ -138,7 +139,7 @@ REGEXES = [
 ]
 
 
-def search_and_replace_regex_func(regexes, window=20):
+def search_and_replace_regex_func(regexes, window=30):
     """Search, but replace found text to prevent double-matching"""
 
     def _search_all_regex(text, include_match=False):
