@@ -65,7 +65,7 @@ Types of changes:
 * Don't take preceding 'denied' if preceded by colon
 * Reordered regexes to handle 'denies hx of SA in college'
 
-[Unreleased](https://github.com/kpwhri/fe5_konsepy/compare/0.0.3...HEAD)
-[0.0.3](https://github.com/kpwhri/fe5_konsepy/compare/0.0.2...0.0.3)
-[0.0.2](https://github.com/kpwhri/fe5_konsepy/compare/0.0.1...0.0.2)
-[0.0.1](https://github.com/kpwhri/fe5_konsepy/releases/0.0.1)
+[unreleased]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.3...HEAD
+[0.0.3]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.2...0.0.3
+[0.0.2]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.1...0.0.2
+[0.0.1]: https://github.com/kpwhri/fe5_konsepy/releases/0.0.1
