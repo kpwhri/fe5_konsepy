@@ -17,6 +17,21 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+
+* Postprocessing for both smoking and suicide attempt
+* Improved instructions specific to FE5 work
+
+### Changed
+
+* Handle suggestion to quit smoking as current smoker
+* Handle family history section for suicide attempt (but not long-range)
+* Allowed increased complexity for historical time frame (suicide attempt) 
+
+### Fixed
+
+* Added missing argumnets
+
 
 ## [0.0.2] - 2024-05-29
 
