@@ -32,6 +32,7 @@ never = r'(?:never|no(?:ne)?)'
 smoke_target = r'(?:marijuana|tobacco|cigarettes?|cigars?)'
 curr_smokes = r'(?:smokes)'
 past_smoked = r'(?:smoked|used to smoke)'
+advised = r'(?:advis|suggest|encourag|recommend)\w*'
 
 
 def check_if_zero(default_value=SmokingCategory.HISTORY):
@@ -102,6 +103,7 @@ def check_if_hypothetical():
 
 
 REGEXES = [
+    (re.compile(rf'\b{advised}\W*(?:\w+\W+){{,3}}{no_longer}\W*{smoking}\b', re.I), SmokingCategory.CURRENT),
     (re.compile(rf'\b{smoking_history}\b', re.I), SmokingCategory.HISTORY),
     (re.compile(rf'\b{former}\W*{smoker}\b', re.I), SmokingCategory.HISTORY,
      has_other_subject_before(SmokingCategory.FAMILY),

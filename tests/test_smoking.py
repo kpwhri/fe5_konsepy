@@ -33,6 +33,9 @@ from fe5_konsepy.concepts.smoking import SmokingCategory, RUN_REGEXES_FUNC
     ('former smoker', SmokingCategory.HISTORY),
     ('aunt is a current smoker', SmokingCategory.FAMILY),
     ('current smoker', SmokingCategory.CURRENT),
+    ('advised her to quit smoking', SmokingCategory.CURRENT),
+    ('father suggested that he quit smoking', SmokingCategory.CURRENT),
+    ('father suggested that he not quit smoking', SmokingCategory.CURRENT),
 ])
 def test_smoking_category(text, exp):
     results = set(RUN_REGEXES_FUNC(text))
