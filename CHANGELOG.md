@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## [0.0.3] - 2024-09-25
+
 ### Added
 
 * Postprocessing for both smoking and suicide attempt
@@ -61,3 +64,5 @@ Types of changes:
 * Improved handling of other subject
 * Don't take preceding 'denied' if preceded by colon
 * Reordered regexes to handle 'denies hx of SA in college'
+
+
