@@ -28,7 +28,7 @@ def wordgen(n):
     ('denies suicide attempt several years ago', SuicideAttempt.NO),
     ('denied history of suicide attempt', SuicideAttempt.NO),
     ('not had previous suicide attempt', SuicideAttempt.NO),
-    ('family history of suicide attempt', SuicideAttempt.NO),
+    ('family history of suicide attempt', SuicideAttempt.FAMILY),
     ('history of suicide attempt', SuicideAttempt.YES),
     ('history of suicide attempt: denied', SuicideAttempt.NO),
     ('suicide attempt in the past', SuicideAttempt.YES),
@@ -61,6 +61,11 @@ def wordgen(n):
     ('history of deliberate self-harm', SuicideAttempt.YES),
     ('or history of deliberate self-harm', SuicideAttempt.NO),
     ('nor history of deliberate self-harm', SuicideAttempt.NO),
+    ('suicide attempt 3 years ago', SuicideAttempt.YES),
+    ('sister suicide attempt 3 years ago', SuicideAttempt.FAMILY),
+    ('per sister suicide attempt 3 years ago', SuicideAttempt.YES),
+    ('past suicide attempts due to family stress', SuicideAttempt.YES),
+    ('Last suicide attempt two years ago. Presence of brother triggers events.', SuicideAttempt.YES),
 ])
 def test_suicide_attempt_regexes(text, exp):
     results = set(RUN_REGEXES_FUNC(text))

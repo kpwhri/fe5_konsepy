@@ -15,7 +15,7 @@ import enum
 import re
 
 from fe5_konsepy.other_subject import has_other_subject
-from fe5_konsepy.utils import get_precontext, get_postcontext, get_contexts
+from fe5_konsepy.utils import get_contexts
 
 
 class SuicideAttempt(enum.Enum):  # TODO: change 'Concept' to relevant concept name
@@ -72,7 +72,7 @@ age = rf'(?:at\W*)?age\W*{number}'
 sa_predicate = rf'(?:{approximately}\W*)?(?:{in_period}|{period_ago}|{more_than_times}|{as_a_role}|{age})'
 
 # per/according to/at X's house
-PER_PAT = re.compile(r'(?:\bper\b|according\W*to|\bat\b)(?:\W+\w+)?\W*$', re.I)
+PER_PAT = re.compile(r'(?:\bper\b|according\W*to|\bat\b|\bdue\W*to\b|because\W*of\b)(?:\W+\w+)?\W*$', re.I)
 OBJECT_PAT = re.compile(r'(?:\w+\W+)?(?:med\w*|gun|weapon|pill)s?', re.I)
 
 
@@ -83,9 +83,9 @@ def is_not_other_subject(m, precontext, postcontext, **kwargs):
 
 
 def check_if_other_subject(m, precontext, postcontext, text, window, **kwargs):
-    if m2 := has_other_subject(precontext):
+    if m2 := has_other_subject(precontext, direction=-1):
         direction = -1
-    elif m2 := has_other_subject(postcontext):
+    elif m2 := has_other_subject(postcontext, direction=1):
         direction = 1
     if m2:
         if is_not_other_subject(m2, **get_contexts(
@@ -121,8 +121,10 @@ REGEXES = [
     (re.compile(rf'\b{deny}\W*{suicide_attempt}\W*{sa_predicate}\b', re.I),
      SuicideAttempt.NO),
     # must be above SA SA_pred due to 'denies hx of SA in teens'
-    (re.compile(rf'\b(?:{deny}|{no}|{family_hx})\W*(?:\w+\W*)?{hx_of}\W*{suicide_attempt}\b', re.I),
+    (re.compile(rf'\b(?:{deny}|{no})\W*(?:\w+\W*)?{hx_of}\W*{suicide_attempt}\b', re.I),
      SuicideAttempt.NO, [check_if_colon_before]),
+    (re.compile(rf'\b(?:{family_hx})\W*(?:\w+\W*)?{hx_of}\W*{suicide_attempt}\b', re.I),
+     SuicideAttempt.FAMILY, [check_if_colon_before]),
     (re.compile(rf'\b{suicide_attempt}\W*{sa_predicate}\b', re.I),
      SuicideAttempt.YES, [check_if_other_subject]),
     (re.compile(rf'\b{hx_of}\W*{suicide_attempt}\s*:\s*(?:{deny}|{no})\b', re.I),

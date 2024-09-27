@@ -1,8 +1,6 @@
 import enum
 import re
 
-from konsepy.regex import search_all_regex
-
 from fe5_konsepy.other_subject import has_other_subject
 
 

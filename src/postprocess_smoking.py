@@ -1,4 +1,5 @@
 import csv
+from loguru import logger
 from pathlib import Path
 
 
@@ -14,6 +15,7 @@ def vals(data, *cols):
 
 
 def postprocess_smoking(infile: Path, outfile: Path):
+    logger.add(outfile.with_suffix('.log'))
     UNK = 'SmokingCategory.UNKNOWN'
     NO = 'SmokingCategory.NO'
     YES = 'SmokingCategory.YES'
@@ -46,8 +48,10 @@ def postprocess_smoking(infile: Path, outfile: Path):
                     write(YES)
                 elif hx and not any([yes, curr, never]):
                     write(HISTORY)
-                elif (no or never) and not any([yes, hx, curr]):
+                elif never and not any([yes, hx, curr]):
                     write(NEVER)
+                elif no and not any([yes, hx, curr]):
+                    write(NO)
                 else:
                     if no > (curr + yes):
                         write(NO)

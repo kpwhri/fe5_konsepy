@@ -17,8 +17,19 @@ OTHER_SUBJECT_RX = re.compile('(?:{})'.format(
 )
 
 
-def has_other_subject(text):
-    """Return first mention of other subject"""
+def has_other_subject(text, direction=0, banned_characters='.'):
+    """Return first mention of other subject
+
+    direction = set to -1 (precontext) or 1 (postcontext) to ensure is in same sentence
+    """
     if m := OTHER_SUBJECT_RX.search(text):
+        if direction == -1:  # precontext
+            for ch in banned_characters:
+                if ch in text[m.end():]:
+                    return None
+        elif direction == 1:  # postcontext
+            for ch in banned_characters:
+                if ch in text[:m.start()]:
+                    return None
         return m
     return None

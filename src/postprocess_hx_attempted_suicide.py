@@ -1,4 +1,5 @@
 import csv
+from loguru import logger
 from pathlib import Path
 
 
@@ -14,6 +15,7 @@ def vals(data, *cols):
 
 
 def postprocess_hx_attempted_suicide(infile: Path, outfile: Path):
+    logger.add(outfile.with_suffix('.log'))
     NO = 'SuicideAttempt.NO'
     YES = 'SuicideAttempt.YES'
     HISTORY = 'SuicideAttempt.HISTORY'
@@ -54,6 +56,7 @@ def postprocess_hx_attempted_suicide(infile: Path, outfile: Path):
                         write(FAMILY)
                     if no >= (yes + hx):
                         write(NO)
+                # certain cases, e.g., `yes-1 = no, where no > 0` determined to be 'too close to call'
 
 
 if __name__ == '__main__':

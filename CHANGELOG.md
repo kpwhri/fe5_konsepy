@@ -17,6 +17,11 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+
+* Logging file for postprocessing, tests
+* Improved handling of other subject (e.g., disallowing across period-delimited sentence boundary)
+
 
 ## [0.0.3] - 2024-09-25
 
