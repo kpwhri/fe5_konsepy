@@ -29,15 +29,57 @@ class Postprocessor:
         self.default_feature_set = {'feature': None, 'fe_codetype': None, 'feature_status': None} | feature_plus
 
     @abstractmethod
-    def load_categories(self):
+    def load_categories(self) -> None:
+        """This function should add attributes to the class, and `self.in_fieldnames` being a set of all of them
+
+        E.g.,
+        self.NO = 'SuicideAttempt.NO'
+        self.YES = 'SuicideAttempt.YES'
+        self.HISTORY = 'SuicideAttempt.HISTORY'
+        self.FAMILY = 'SuicideAttempt.FAMILY'
+        self.CODE = 'SuicideAttempt.CODE'
+        self.PROBLEM_LIST = 'SuicideAttempt.PROBLEM_LIST'
+        self.in_fieldnames = {self.YES, self.NO, self.HISTORY, self.FAMILY, self.CODE, self.PROBLEM_LIST}
+        """
         pass
 
     @abstractmethod
-    def get_features(self):
+    def get_features(self) -> dict[str, dict]:
+        """This function should return a dict of features
+
+        E.g.,
+        return {
+            self.YES: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'A'},
+            self.NO: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'N'},
+            self.FAMILY: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'X'},
+        }
+        """
         pass
 
     @abstractmethod
     def process_row(self, row, write):
+        """This function should include logic for parsing a row of data and determining how to summarize the info.
+
+        E.g.,
+        code, pl, yes, no, family, hx = self.vals(
+            row, self.CODE, self.PROBLEM_LIST, self.YES, self.NO, self.FAMILY, self.HISTORY
+        )
+        if code or pl:
+            write(self.YES)
+        elif (yes or hx) and not any([no, family]):  # only yes
+            write(self.YES)
+        elif no and not any([yes, family, hx]):
+            write(self.NO)
+        elif family and not any([yes, no, hx]):
+            write(self.FAMILY)
+        else:
+            if (yes + hx) > (family + no + 1):  # yes must be much more common
+                write(self.YES)
+            if family:
+                write(self.FAMILY)
+            if no >= (yes + hx):
+                write(self.NO)
+        """
         pass
 
     def postprocess(self, infile: Path, outdir: Path):
