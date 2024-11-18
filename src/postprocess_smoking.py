@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fe5_konsepy.postprocess_shared import Postprocessor
+from fe5_konsepy.postprocess_shared import Postprocessor, run_postprocessing
 
 
 class SmokingPostprocessor(Postprocessor):
@@ -59,16 +59,4 @@ def postprocess_smoking(infile: Path, outdir: Path, pipeline_id=None):
 
 
 if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser(fromfile_prefix_chars='!@')
-    parser.add_argument('--infile', type=Path,
-                        help='Input CSV file at appropriate level of analysis '
-                             '(notes_category_counts.csv for note-level).')
-    parser.add_argument('--outdir', type=Path,
-                        help='Output directory to place table definitions as CSV files.')
-    parser.add_argument('--pipeline-id', dest='pipeline_id', type=int, default=None,
-                        help='Specify the Pipeline ID (aka Feature ID) to be included with this run.')
-    args = parser.parse_args()
-
-    postprocess_smoking(**vars(args))
+    run_postprocessing(postprocess_smoking)

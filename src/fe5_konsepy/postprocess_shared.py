@@ -30,7 +30,7 @@ class Postprocessor:
         pass
 
     @abstractmethod
-    def process_row(self):
+    def process_row(self, row, write):
         pass
 
     def postprocess(self, infile: Path, outdir: Path):
@@ -75,3 +75,17 @@ class Postprocessor:
                 'description': self.description,
                 'source': 'https://github.com/kpwhri/fe5_konsepy'
             })
+
+
+def run_postprocessing(func):
+    import argparse
+
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='!@')
+    parser.add_argument('--infile', type=Path,
+                        help='Input CSV file at appropriate level of analysis '
+                             '(notes_category_counts.csv for note-level).')
+    parser.add_argument('--outdir', type=Path,
+                        help='Output directory to place table definitions as CSV files.')
+    parser.add_argument('--pipeline-id', dest='pipeline_id', type=int, default=None,
+                        help='Specify the Pipeline ID (aka Feature ID) to be included with this run.')
+    return func(**vars(parser.parse_args()))
