@@ -23,6 +23,7 @@ Types of changes:
 * Improved handling of other subject (e.g., disallowing across period-delimited sentence boundary)
 * Handling postprocessing using derived classes to improve code reuse
 * Try to identify the `output.jsonl` file and parse it to create the feature details file
+* Added flag to replace control characters with '?' in the matched text field (FEATURE_DETAILS table)
 
 
 ## [0.0.3] - 2024-09-25
