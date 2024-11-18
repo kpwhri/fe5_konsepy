@@ -4,6 +4,7 @@ from abc import abstractmethod
 from pathlib import Path
 
 from loguru import logger
+from unicodedata import category
 
 from fe5_konsepy import __version__
 
@@ -12,9 +13,12 @@ import datetime
 
 class Postprocessor:
 
-    def __init__(self, name, pipeline_id=None, description='Regular expression-based pipeline in konsepy.'):
+    def __init__(self, name, pipeline_id=None,
+                 description='Regular expression-based pipeline in konsepy.',
+                 remove_ctrl=False):
         self.now_dt = datetime.datetime.now()
         self.now_str = self.now_dt.strftime('%Y%m%d_%H%M%S')
+        self.remove_ctrl = remove_ctrl
         self.run_name = f'{name}_{self.now_str}'
         self.pipeline_id = pipeline_id or int(str(hash(self.run_name))[-8:])
         self.description = description
@@ -92,7 +96,10 @@ class Postprocessor:
         return [self.val(data, col) for col in cols]
 
     def clean(self, text):
-        return ' '.join(text.split())
+        text = ' '.join(text.split())
+        if self.remove_ctrl:
+            return ''.join(c if category(c)[0] != 'C' else '?' for c in text)
+        return text
 
     def write_pipeline_version_info(self, outfile):
         fieldnames = ['id', 'name', 'version', 'run_date', 'description', 'source']
@@ -120,4 +127,6 @@ def run_postprocessing(func):
                         help='Output directory to place table definitions as CSV files.')
     parser.add_argument('--pipeline-id', dest='pipeline_id', type=int, default=None,
                         help='Specify the Pipeline ID (aka Feature ID) to be included with this run.')
+    parser.add_argument('--remove-ctrl', dest='remove_ctrl', action='store_true', default=False,
+                        help='Include thsi flag to replace all control characters with "?" in the matched text.')
     return func(**vars(parser.parse_args()))

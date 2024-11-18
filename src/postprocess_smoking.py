@@ -49,11 +49,12 @@ class SmokingPostprocessor(Postprocessor):
                 pass  # family
 
 
-def postprocess_smoking(infile: Path, outdir: Path, pipeline_id=None):
+def postprocess_smoking(infile: Path, outdir: Path, pipeline_id=None, remove_ctrl=False):
     pp = SmokingPostprocessor(
         'fe5_konsepy-smoking',
         pipeline_id,
         'Regular expression-based pipeline to extract smoking status.',
+        remove_ctrl,
     )
     pp.postprocess(infile, outdir)
 
