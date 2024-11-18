@@ -21,6 +21,7 @@ Types of changes:
 
 * Logging file for postprocessing, tests
 * Improved handling of other subject (e.g., disallowing across period-delimited sentence boundary)
+* Handling postprocessing using derived classes to improve code reuse
 
 
 ## [0.0.3] - 2024-09-25
