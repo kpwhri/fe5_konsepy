@@ -17,6 +17,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Fixed
+
+* Name shadowing of `category` (local and `unicodedata` import)
+
 
 ## [0.0.4] - 2024-11-18
 

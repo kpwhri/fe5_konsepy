@@ -4,7 +4,7 @@ from abc import abstractmethod
 from pathlib import Path
 
 from loguru import logger
-from unicodedata import category
+import unicodedata
 
 from fe5_konsepy import __version__
 
@@ -98,7 +98,7 @@ class Postprocessor:
     def clean(self, text):
         text = ' '.join(text.split())
         if self.remove_ctrl:
-            return ''.join(c if category(c)[0] != 'C' else '?' for c in text)
+            return ''.join(c if unicodedata.category(c)[0] != 'C' else '?' for c in text)
         return text
 
     def write_pipeline_version_info(self, outfile):
