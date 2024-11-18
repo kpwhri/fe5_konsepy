@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## [0.0.4] - 2024-11-18
+
 ### Added
 
 * Logging file for postprocessing, tests
@@ -74,6 +77,7 @@ Types of changes:
 * Reordered regexes to handle 'denies hx of SA in college'
 
 [unreleased]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.3...HEAD
+[0.0.4]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/kpwhri/fe5_konsepy/releases/0.0.1
