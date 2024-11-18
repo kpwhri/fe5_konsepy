@@ -1,4 +1,5 @@
 import csv
+import json
 from abc import abstractmethod
 from pathlib import Path
 
@@ -17,9 +18,11 @@ class Postprocessor:
         self.run_name = f'{name}_{self.now_str}'
         self.pipeline_id = pipeline_id or int(str(hash(self.run_name))[-8:])
         self.description = description
-        self.feature_labels = ['feature', 'fe_codetype', 'feature_status', 'pipeline_id']
+        self.feature_labels = ['feature', 'fe_codetype', 'feature_status', 'pipeline_id', 'confidence']
         self.load_categories()
-        self.features = {x: y | {'pipeline_id': self.pipeline_id} for x, y in self.get_features().items()}
+        feature_plus = {'pipeline_id': self.pipeline_id, 'confidence': 'N'}
+        self.features = {x: y | feature_plus for x, y in self.get_features().items()}
+        self.default_feature_set = {'feature': None, 'fe_codetype': None, 'feature_status': None} | feature_plus
 
     @abstractmethod
     def load_categories(self):
@@ -34,6 +37,7 @@ class Postprocessor:
         pass
 
     def postprocess(self, infile: Path, outdir: Path):
+        outdir.mkdir(exist_ok=True)
         logger.add(outdir / f'{self.run_name}.log')
         fe_table = outdir / 'fe_feature_table.csv'
         pipeline_table = outdir / 'fe_pipeline_table.csv'
@@ -53,6 +57,31 @@ class Postprocessor:
                 for row in reader:
                     self.process_row(row, write)
 
+        output_jsonl = infile.parent / 'output.jsonl'
+        if not output_jsonl.exists():
+            logger.warning(f'Cannot create FE_FEATURE_DETAIL table: cannot find `output_jsonl` at {output_jsonl}.')
+        else:
+            logger.info(f'Generating FE_FEATURE_DETAIL table using: {output_jsonl}')
+            details_fieldnames = ['studyid', 'note_id', 'note_date', 'start_index', 'end_index', 'matched_text',
+                                  ] + self.feature_labels
+            with open(detail_table, 'w', encoding='utf8', newline='') as out:
+                writer = csv.DictWriter(out, fieldnames=details_fieldnames)
+                writer.writeheader()
+                with open(output_jsonl, encoding='utf8') as fh:
+                    for line in fh:
+                        data = json.loads(line.strip())
+                        for category, (matched_text, start_idx, end_idx) in zip(data['categories'], data['matches']):
+                            writer.writerow(
+                                {
+                                    'studyid': data['studyid'],
+                                    'note_id': data['note_id'],
+                                    'note_date': data['note_date'],
+                                    'start_index': start_idx,
+                                    'end_index': end_idx,
+                                    'matched_text': self.clean(matched_text),
+                                } | self.features.get(category, self.default_feature_set)
+                            )
+
     def val(self, data, col):
         d = data[col]
         if d:
@@ -61,6 +90,9 @@ class Postprocessor:
 
     def vals(self, data, *cols):
         return [self.val(data, col) for col in cols]
+
+    def clean(self, text):
+        return ' '.join(text.split())
 
     def write_pipeline_version_info(self, outfile):
         fieldnames = ['id', 'name', 'version', 'run_date', 'description', 'source']

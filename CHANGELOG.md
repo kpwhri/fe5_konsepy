@@ -22,6 +22,7 @@ Types of changes:
 * Logging file for postprocessing, tests
 * Improved handling of other subject (e.g., disallowing across period-delimited sentence boundary)
 * Handling postprocessing using derived classes to improve code reuse
+* Try to identify the `output.jsonl` file and parse it to create the feature details file
 
 
 ## [0.0.3] - 2024-09-25
