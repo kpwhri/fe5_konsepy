@@ -61,7 +61,20 @@ arguments (the defaults are shown):
 * `--notedate-label note_date`
 * `--notetext-label note_text`
 
+After running this command, you can check the log output/file for information on running the postprocessor. The
+recommended/inferred command line will be included there.
+
 ### Postprocessing
+
+The postprocessing step will generate a skeleton of 3 different FE tables -- these will still need to be merged into the
+Sentinel Common Data Model by adding ProviderID, EncounterID, etc. These can be obtained by merging the `note_id` in the
+output tables to this metadata.
+
+1. **fe_feature_table**: the primary FE table with algorithm output harmonized at the note- or patient-level
+2. **fe_feature_detail_table**: a more complete table of all NLP output, useful for debugging or understanding the
+   *decisions* in the **fe_feature_table**.
+3. **fe_pipeline_table**: local table storing run information about the algorithm (e.g., date run, version info,
+   description, etc.)
 
 Once the target concepts have been identified, they will be output to CSV files in a the output directory starting with
 the labels `run_all_{YYYYMMDD_HHMMSS}`. Within this folder
@@ -72,6 +85,8 @@ the labels `run_all_{YYYYMMDD_HHMMSS}`. Within this folder
 The postprocessing step attempts to summarize the disparate counts/values extracted into a single concluding value to be
 populated to the FE Table. In certain cases, a single note might produce multiple output values (i.e., 1 note will
 equate to multiple lines in the FE table).
+
+As of version 0.0.5, the command line to run the postprocessor will be included in the log.
 
 #### Any Changes to Category Counts?
 
@@ -101,23 +116,31 @@ replace the extracted concepts with the following headers/variables/columns:
 **smoking**
 
 ```commandline
-python src/postprocess_smoking.py --infile notes_category_counts.csv --outfile fe_table_smoking.csv
+python src/postprocess_smoking.py --infile notes_category_counts.csv --outdir fe_tables_smoking
 ```
+
+Or, to specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the command above.
 
 **suicide_attempt**
 
 ```commandline
-python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv --outfile fe_table_hxsa.csv
+python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv --outdir fe_tables_hxsa.csv
 ```
+
+Or, to specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the command above.
 
 ### Storing Version Information
 
 It is probably important to store the version information in a separate table, linking with a unique `PipelineID` (or
 `FeatureID` as currently defined).
 
+In versions > 0.0.5, a `fe_pipeline_table.csv` file will be generated including this information. An 8-digit
+`PipelineID` (or `FeatureID`) will be automatically generated, or can be specified at the command line when running the
+postprocessor using `--pipeline-id #`.
+
 * **Pipeline name**: fe5_konsepy
 * **Source**: https://github.com/kpwhri/fe5_konsepy
-* **Version**: 0.0.3
+* **Version**: 0.0.5
     * You can get this information by either:
         * Looking in `src/fe5_konsepy/__init__.py`
         * Looking at the most recent version at the top of `CHANGELOG.md`
