@@ -120,15 +120,18 @@ replace the extracted concepts with the following headers/variables/columns:
 python src/postprocess_smoking.py --infile notes_category_counts.csv --outdir fe_tables_smoking
 ```
 
-Or, to specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the command above.
-
 **suicide_attempt**
 
 ```commandline
 python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv --outdir fe_tables_hxsa
 ```
 
-Or, to specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the command above.
+##### Additional Arguments for Postprocessing
+
+* `--pipeline-id <NUMBER>`: specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the
+  command above
+* `--remove-ctrl`: (flag) if specified, remove all control characters from the text snippets dumped to *
+  *fe_feature_detail_table** to prevent potential problems opening that file
 
 ### Storing Version Information
 
