@@ -70,7 +70,8 @@ The postprocessing step will generate a skeleton of 3 different FE tables -- the
 Sentinel Common Data Model by adding ProviderID, EncounterID, etc. These can be obtained by merging the `note_id` in the
 output tables to this metadata.
 
-1. **fe_feature_table**: the primary FE table with algorithm output harmonized at the note- or patient-level
+1. **fe_feature_table**: the primary FE table with algorithm output harmonized at the note-level *(Recommended for FE5)*
+   or patient-level
 2. **fe_feature_detail_table**: a more complete table of all NLP output, useful for debugging or understanding the
    *decisions* in the **fe_feature_table**.
 3. **fe_pipeline_table**: local table storing run information about the algorithm (e.g., date run, version info,
@@ -80,7 +81,7 @@ Once the target concepts have been identified, they will be output to CSV files 
 the labels `run_all_{YYYYMMDD_HHMMSS}`. Within this folder
 
 * For patient-level information, consider `mrn_category_counts.csv`
-* For note-level information, consider `notes_category_counts.csv`
+* For note-level information, consider `notes_category_counts.csv` *(Recommended for FE5)*
 
 The postprocessing step attempts to summarize the disparate counts/values extracted into a single concluding value to be
 populated to the FE Table. In certain cases, a single note might produce multiple output values (i.e., 1 note will
