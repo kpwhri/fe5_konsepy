@@ -79,6 +79,9 @@ def print_postprocessor_info(outdir: Path, concepts: list[str], file: Path | str
         logger.error(f'Unrecognized concept: {concept}')
         target_file = file.parent / 'postprocess_???????.py'
     cmd = (f'{sys.executable} {target_file}'
-           f' --infile {destdir / "notes_category_counts.csv"}'
+           f' --infile {{}}'
            f' --outdir {destdir / concept}')
-    logger.info(f'>> {cmd}')
+    logger.info(f'## For a note-level summary:')
+    logger.info(f'>> {cmd.format(destdir / "notes_category_counts.csv")}')
+    logger.info(f'## For a patient-level summary:')
+    logger.info(f'>> {cmd.format(destdir / "mrn_category_counts.csv")}')
