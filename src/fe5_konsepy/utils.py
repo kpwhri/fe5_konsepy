@@ -85,3 +85,5 @@ def print_postprocessor_info(outdir: Path, concepts: list[str], file: Path | str
     logger.info(f'>> {cmd.format(destdir / "notes_category_counts.csv")}')
     logger.info(f'## For a patient-level summary:')
     logger.info(f'>> {cmd.format(destdir / "mrn_category_counts.csv")}')
+    logger.info(f'The above commands will generate a random 8-digit PipelineID (a.k.a., FeatureID),'
+                f' to specify this directly, use `--pipeline-id 6`.')
