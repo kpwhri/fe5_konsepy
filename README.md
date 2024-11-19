@@ -124,7 +124,7 @@ Or, to specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pi
 **suicide_attempt**
 
 ```commandline
-python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv --outdir fe_tables_hxsa.csv
+python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv --outdir fe_tables_hxsa
 ```
 
 Or, to specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the command above.
