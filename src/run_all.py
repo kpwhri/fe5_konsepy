@@ -29,7 +29,7 @@ def run_all_concepts(input_files, outdir: Path,
         id_label=id_label, noteid_label=noteid_label,
         notedate_label=notedate_label, notetext_label=notetext_label,
         noteorder_label=noteorder_label, incremental_output_only=incremental_output_only,
-        concepts=concepts
+        concepts=concepts, **kwargs
     )
     print_postprocessor_info(outdir, concepts, __file__, destdir)
 
