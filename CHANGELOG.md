@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+
+## [0.0.5] - 2024-11-19
+
 ### Added
 
 * Improved documentation of the postprocessor
@@ -25,6 +28,7 @@ Types of changes:
 ### Fixed
 
 * Name shadowing of `category` (local and `unicodedata` import)
+
 
 ## [0.0.4] - 2024-11-18
 
@@ -84,7 +88,8 @@ Types of changes:
 * Don't take preceding 'denied' if preceded by colon
 * Reordered regexes to handle 'denies hx of SA in college'
 
-[unreleased]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.3...HEAD
+[unreleased]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.5...HEAD
+[0.0.4]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.4...0.0.5
 [0.0.4]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/kpwhri/fe5_konsepy/compare/0.0.1...0.0.2
