@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+
+* Improved README doco, especially regarding changes in [0.0.5]
 
 ## [0.0.5] - 2024-11-19
 
