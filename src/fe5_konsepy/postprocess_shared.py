@@ -83,6 +83,8 @@ class Postprocessor:
         pass
 
     def postprocess(self, infile: Path, outdir: Path):
+        if outdir is None:
+            outdir = infile.parent / self.run_name
         outdir.mkdir(exist_ok=True)
         logger.add(outdir / f'{self.run_name}.log')
         logger.info(f'Preparing to create fe tables at: {outdir} using {infile}.')
@@ -166,10 +168,10 @@ def run_postprocessing(func):
     import argparse
 
     parser = argparse.ArgumentParser(fromfile_prefix_chars='!@')
-    parser.add_argument('--infile', type=Path,
+    parser.add_argument('--infile', type=Path, required=True,
                         help='Input CSV file at appropriate level of analysis '
                              '(notes_category_counts.csv for note-level).')
-    parser.add_argument('--outdir', type=Path,
+    parser.add_argument('--outdir', type=Path, default=None,
                         help='Output directory to place table definitions as CSV files.')
     parser.add_argument('--pipeline-id', dest='pipeline_id', type=int, default=None,
                         help='Specify the Pipeline ID (aka Feature ID) to be included with this run.')

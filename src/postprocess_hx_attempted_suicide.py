@@ -43,7 +43,7 @@ class HxSAPostprocessor(Postprocessor):
         self.in_fieldnames = {self.YES, self.NO, self.HISTORY, self.FAMILY, self.CODE, self.PROBLEM_LIST}
 
 
-def postprocess_hx_attempted_suicide(infile: Path, outdir: Path, pipeline_id=None, remove_ctrl=False):
+def postprocess_hx_attempted_suicide(infile: Path, outdir: Path = None, pipeline_id=None, remove_ctrl=False):
     pp = HxSAPostprocessor(
         'fe5_konsepy-hx_suicide_attempt',
         pipeline_id,

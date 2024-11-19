@@ -49,7 +49,7 @@ class SmokingPostprocessor(Postprocessor):
                 pass  # family
 
 
-def postprocess_smoking(infile: Path, outdir: Path, pipeline_id=None, remove_ctrl=False):
+def postprocess_smoking(infile: Path, outdir: Path = None, pipeline_id=None, remove_ctrl=False):
     pp = SmokingPostprocessor(
         'fe5_konsepy-smoking',
         pipeline_id,

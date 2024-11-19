@@ -21,6 +21,10 @@ Types of changes:
 
 * Improved README doco, especially regarding changes in [0.0.5]
 
+### Changed
+
+* No longer need to specify `--outdir` when running postprocessor, and it will default to the `run_name`
+
 ## [0.0.5] - 2024-11-19
 
 ### Added
