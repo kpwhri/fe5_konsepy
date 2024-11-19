@@ -48,10 +48,10 @@ regular expressions each receive an individual label.
 * To run the pipeline on a CSV file:
     * `python src/run_all.py --input-files sample/corpus.csv --outdir out --id-label studyid`
 * To run just the `smoking` pipeline on a CSV file:
-    * `python src/run_concept.py --input-files sample/corpus.csv --outdir out --id-label studyid --concept smoking`
+    * `python src/run_all.py --input-files sample/corpus.csv --outdir out --id-label studyid --concept smoking`
 * To run just the `suicide_attempt` pipeline on a CSV file:
     *
-  `python src/run_concept.py --input-files sample/corpus.csv --outdir out --id-label studyid --concept suicide_attempt`
+  `python src/run_all.py --input-files sample/corpus.csv --outdir out --id-label studyid --concept suicide_attempt`
 
 If you need to specify different headers/variables/labels to your corpus file, use the following command line
 arguments (the defaults are shown):
