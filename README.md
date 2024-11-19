@@ -117,17 +117,19 @@ replace the extracted concepts with the following headers/variables/columns:
 **smoking**
 
 ```commandline
-python src/postprocess_smoking.py --infile notes_category_counts.csv --outdir fe_tables_smoking
+python src/postprocess_smoking.py --infile notes_category_counts.csv
 ```
 
 **suicide_attempt**
 
 ```commandline
-python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv --outdir fe_tables_hxsa
+python src/postprocess_hx_attempted_suicide.py --infile notes_category_counts.csv
 ```
 
-##### Additional Arguments for Postprocessing
+##### Optional Arguments for Postprocessing
 
+* `--outdir <PATH>`: by default, `--outdir` will be a subdirectory of `--infile`, but use this option to customize the
+  output directory location
 * `--pipeline-id <NUMBER>`: specify a particular `PipelineID` (or `FeatureID`) like `6`, append `--pipeline-id 6` to the
   command above
 * `--remove-ctrl`: (flag) if specified, remove all control characters from the text snippets dumped to *
