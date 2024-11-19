@@ -85,6 +85,7 @@ class Postprocessor:
     def postprocess(self, infile: Path, outdir: Path):
         outdir.mkdir(exist_ok=True)
         logger.add(outdir / f'{self.run_name}.log')
+        logger.info(f'Preparing to create fe tables at: {outdir} using {infile}.')
         fe_table = outdir / 'fe_feature_table.csv'
         pipeline_table = outdir / 'fe_pipeline_table.csv'
         detail_table = outdir / 'fe_feature_detail_table.csv'
@@ -94,6 +95,7 @@ class Postprocessor:
         def write(feature):
             writer.writerow({col: row[col] for col in included_names} | self.features[feature])
 
+        logger.info(f'Creating primary FE feature table at: {fe_table}.')
         with open(fe_table, 'w', encoding='utf8', newline='') as out:
             with open(infile, encoding='utf8') as fh:
                 reader = csv.DictReader(fh)
@@ -127,6 +129,7 @@ class Postprocessor:
                                     'matched_text': self.clean(matched_text),
                                 } | self.features.get(category, self.default_feature_set)
                             )
+        logger.info(f'Finished generating FE tables to {outdir}.')
 
     def val(self, data, col):
         d = data[col]
@@ -144,6 +147,7 @@ class Postprocessor:
         return text
 
     def write_pipeline_version_info(self, outfile):
+        logger.info(f'Creating local Pipeline version information file: {outfile}.')
         fieldnames = ['id', 'name', 'version', 'run_date', 'description', 'source']
         with open(outfile, 'w', encoding='utf8', newline='') as fh:
             writer = csv.DictWriter(fh, fieldnames=fieldnames)

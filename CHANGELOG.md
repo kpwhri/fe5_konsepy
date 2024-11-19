@@ -20,6 +20,7 @@ Types of changes:
 ### Added
 
 * Improved documentation of the postprocessor
+* Logging output for `run_all` will specify how to run the postprocessor
 
 ### Fixed
 

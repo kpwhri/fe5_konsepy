@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+from loguru import logger
+
+
 def get_precontext(m, text, window=20, start=None):
     """
     TODO: add word window
@@ -43,3 +49,36 @@ def get_contexts(m, text, window=20, context_match=None, context_window=None, co
         'text': text,
         'window': window,
     }
+
+
+def print_postprocessor_info(outdir: Path, concepts: list[str], file: Path | str, destdir: Path = None):
+    """Print information for running the postprocessors on the command line.
+
+    outdir: parameter specified when calling `run_all`
+    concepts: the concepts specified
+    destdir: may be None; the actual destination directory created
+    """
+    logger.info(f'To run the postprocessor and build the FE tables:')
+    if len(concepts) != 1:
+        logger.error(f'Postprocessor will probably run incorrectly:'
+                     f' please specify one concept like `--concept smoking` or `--concept suicide_attempt`')
+        if len(concepts) == 0:
+            concepts = ['smoking']
+    if not destdir:
+        destdir = max(outdir.glob('run_all_*'), default=outdir / 'run_all_YYYYMMDD_HHMMSS')
+        logger.warning(f'Guessed at the output directory so you may need to fix the `run_all` directory below'
+                       f' to the correct run: {destdir}')
+    concept = concepts[0]
+    # get postproces_*.py filename
+    file = Path(file)  # ensure not string
+    if concept == 'smoking':
+        target_file = file.parent / 'postprocess_smoking.py'
+    elif concept == 'suicide_attempt':
+        target_file = file.parent / 'postprocess_hx_attempted_suicide.py'
+    else:
+        logger.error(f'Unrecognized concept: {concept}')
+        target_file = file.parent / 'postprocess_???????.py'
+    cmd = (f'{sys.executable} {target_file}'
+           f' --infile {destdir / "notes_category_counts.csv"}'
+           f' --outdir {destdir / concept}')
+    logger.info(f'>> {cmd}')
