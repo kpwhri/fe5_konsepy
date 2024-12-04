@@ -15,6 +15,14 @@ regular expressions each receive an individual label.
 
 ## Getting Started
 
+### Overview
+
+* Install prerequisites
+* Prepare input dataset
+* Run this NLP pipeline
+* Run postprocessing (included in this package) to summarize the output at patient or note level
+* Add missing SCDM variables
+
 ### Prerequisites
 
 * Python 3.9+
@@ -151,6 +159,15 @@ postprocessor using `--pipeline-id #`.
         * Looking in `src/fe5_konsepy/__init__.py`
         * Looking at the most recent version at the top of `CHANGELOG.md`
         * Running `git tag -l` and selecting the largest (likely bottom) version number
+
+### Including SCDM Variables
+The output of the postprocessing is not quite complete. The output data must be merged with Sentinel data using the `note_id` field. These include:
+
+* `PatID`
+* `EncounterID` (optional, missing values allowed)
+* `ProviderID` (required, but missing value `.U.` can be used)
+
+The data can then be run through the SCDM QA process to confirm accuracy of format.
 
 ## Variables
 
