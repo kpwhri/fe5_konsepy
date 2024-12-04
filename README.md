@@ -17,11 +17,11 @@ regular expressions each receive an individual label.
 
 ### Overview
 
-* Install prerequisites
-* Prepare input dataset
-* Run this NLP pipeline
-* Run postprocessing (included in this package) to summarize the output at patient or note level
-* Add missing SCDM variables
+* [Install prerequisites](#prerequisites)
+* [Prepare input dataset](#prerequisites)
+* [Run this NLP pipeline](#running)
+* [Run postprocessing](#postprocessing) (included in this package) to summarize the output at patient or note level
+* [Add missing SCDM variables](#including-scdm-variables)
 
 ### Prerequisites
 
