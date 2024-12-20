@@ -17,6 +17,9 @@ Types of changes:
 
 ## [Unreleased]
 
+### Changed
+
+* Explicitly output 'U' for Unknown features
 
 ## [0.0.6] - 2024-11-19
 

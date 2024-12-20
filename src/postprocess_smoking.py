@@ -14,6 +14,8 @@ class SmokingPostprocessor(Postprocessor):
         self.NEVER = 'SmokingCategory.NEVER'
         self.FAMILY = 'SmokingCategory.FAMILY'
         self.in_fieldnames = {self.UNK, self.YES, self.NO, self.CURRENT, self.HISTORY, self.NEVER, self.FAMILY}
+        self.UNK_NEVER = 'UNKNOWN_NEVER'
+        self.NOT_NEVER = 'NOT_NEVER'
 
     def get_features(self):
         return {
@@ -22,6 +24,9 @@ class SmokingPostprocessor(Postprocessor):
             self.HISTORY: {'feature': 'C0337664', 'fe_codetype': 'UC', 'feature_status': 'H'},
             self.NEVER: {'feature': 'C0337672', 'fe_codetype': 'UC', 'feature_status': 'A'},
             self.YES: {'feature': 'C0337664', 'fe_codetype': 'UC', 'feature_status': 'A'},
+            self.UNK_NEVER: {'feature': 'C0337672', 'fe_codetype': 'UC', 'feature_status': 'U'},
+            self.NOT_NEVER: {'feature': 'C0337672', 'fe_codetype': 'UC', 'feature_status': 'N'},
+            self.UNK: {'feature': 'C0337664', 'fe_codetype': 'UC', 'feature_status': 'A'},
         }
 
     def process_row(self, row, write):
@@ -30,23 +35,31 @@ class SmokingPostprocessor(Postprocessor):
         )
         if (yes or curr) and not any([no, never]):  # only yes
             write(self.YES)
+            write(self.NOT_NEVER)
         elif hx and not any([yes, curr, never]):
             write(self.HISTORY)
+            write(self.NOT_NEVER)
         elif never and not any([yes, hx, curr]):
             write(self.NEVER)
+            write(self.NO)
         elif no and not any([yes, hx, curr]):
             write(self.NO)
+            write(self.UNK_NEVER)
         else:
             if no > (curr + yes):
                 write(self.NO)
+                write(self.UNK_NEVER)
             elif (curr + yes) > no:  # prefer yes if any admission
                 write(self.YES)
+                write(self.NOT_NEVER)
             elif (hx + no) > yes:
                 write(self.HISTORY)
+                write(self.NOT_NEVER)
             else:
-                pass  # unknown
+                write(self.UNK)  # unknown
+                write(self.UNK_NEVER)  # unknown
             if family:
-                pass  # family
+                pass  # family history -- not relevant in this context
 
 
 def postprocess_smoking(infile: Path, outdir: Path = None, pipeline_id=None, remove_ctrl=False):

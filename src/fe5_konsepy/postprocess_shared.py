@@ -136,7 +136,7 @@ class Postprocessor:
     def val(self, data, col):
         d = data[col]
         if d:
-            return int(d)
+            return int(float(d))
         return 0
 
     def vals(self, data, *cols):

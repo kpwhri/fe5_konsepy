@@ -10,6 +10,7 @@ class HxSAPostprocessor(Postprocessor):
             self.YES: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'A'},
             self.NO: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'N'},
             self.FAMILY: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'X'},
+            self.UNK: {'feature': 'C0455507', 'fe_codetype': 'UC', 'feature_status': 'U'},
         }
 
     def process_row(self, row, write):
@@ -25,12 +26,18 @@ class HxSAPostprocessor(Postprocessor):
         elif family and not any([yes, no, hx]):
             write(self.FAMILY)
         else:
+            found = False
             if (yes + hx) > (family + no + 1):  # yes must be much more common
                 write(self.YES)
+                found = True
             if family:
                 write(self.FAMILY)
+                found = True
             if no >= (yes + hx):
                 write(self.NO)
+                found = True
+            if not found:
+                write(self.UNK)
         # certain cases, e.g., `yes-1 = no, where no > 0` determined to be 'too close to call'
 
     def load_categories(self):
@@ -41,6 +48,7 @@ class HxSAPostprocessor(Postprocessor):
         self.CODE = 'SuicideAttempt.CODE'
         self.PROBLEM_LIST = 'SuicideAttempt.PROBLEM_LIST'
         self.in_fieldnames = {self.YES, self.NO, self.HISTORY, self.FAMILY, self.CODE, self.PROBLEM_LIST}
+        self.UNK = 'UNKNOWN'
 
 
 def postprocess_hx_attempted_suicide(infile: Path, outdir: Path = None, pipeline_id=None, remove_ctrl=False):
