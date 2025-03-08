@@ -214,3 +214,4 @@ The data can then be run through the SCDM QA process to confirm accuracy of form
         * `H`: historical
     * `C0337672`: Non-smoker (i.e., 'never smoker')
         * `A`: affirmed
+        * `N`: negated (i.e., not a 'never smoker', has history of smoking)
